@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import UserRouter from './Routers/user/user.js';
 import loginRouter from './Routers/user/login.js';
 import inventoryRouter from './Routers/accountant/inventory.js';
+import product_fetch from './Routers/fetch/product.js';
 
 const app = express();
 app.use(express.json());
@@ -14,7 +15,9 @@ app.use(bodyParser.json())
 app.use('/signup', UserRouter);
 app.use('/signin', loginRouter)
 app.use('/inventory', inventoryRouter)
+app.use('/product', product_fetch)
 MongoDBConnect()
+
 
 
 

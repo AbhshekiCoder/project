@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 
 let inventorySchema = new mongoose.Schema({
@@ -16,6 +17,10 @@ let inventorySchema = new mongoose.Schema({
        },
        image:{
         
+       },
+       type:{
+              type: String,
+              require: true
        }
 })
 
