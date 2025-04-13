@@ -12,8 +12,13 @@ let inventorySchema = new mongoose.Schema({
         require: true
        },
        quantity:{
-        type:  String,
+        type:  Number,
         require: true
+       },
+       box:{
+              type: Number,
+              require: true
+
        },
        image:{
         
@@ -21,6 +26,17 @@ let inventorySchema = new mongoose.Schema({
        type:{
               type: String,
               require: true
+       },
+       CGST:{
+              type: Number,
+
+       },
+       SGST:{
+              type: Number
+
+       },
+       HSN:{
+              type: Number
        }
 })
 

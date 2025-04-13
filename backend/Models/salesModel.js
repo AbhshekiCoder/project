@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 
 
+
 let salesSchema = new mongoose.Schema({
     product_name:{
         type: String,
@@ -39,12 +40,26 @@ let salesSchema = new mongoose.Schema({
 
     },
     date:{
-        type: Date,
-        default: Date.now,
-        require: true
+        
     },
     imageType:{
         type: String,
         require: true
-    }
+    },
+    CGST:{
+        type: Number,
+
+ },
+ SGST:{
+        type: Number
+
+ },
+ HSN:{
+        type: Number
+ }
+
 });
+
+let salesModel = mongoose.model("sales", salesSchema);
+
+export default salesModel;
