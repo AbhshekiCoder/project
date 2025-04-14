@@ -37,6 +37,11 @@ let inventorySchema = new mongoose.Schema({
        },
        HSN:{
               type: Number
+       },
+       distributor:{
+              type: String,
+              enum: [""]
+
        }
 })
 

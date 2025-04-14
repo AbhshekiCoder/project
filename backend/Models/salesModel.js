@@ -56,7 +56,8 @@ let salesSchema = new mongoose.Schema({
  },
  HSN:{
         type: Number
- }
+ },
+ 
 
 });
 

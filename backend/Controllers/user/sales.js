@@ -7,7 +7,6 @@ let sales = async(req, res)=>{
 
 
   let {product_name, product_id, accountant_id, quantity, price, imageType} = req.body;
-  let month = new Date().getMonth()+1
   let d = new Date().getDate() + "/" +  month + "/" + new Date().getFullYear();
   let time = new Date().getHours() + ":" + new Date().getMinutes();
     try{
