@@ -1,0 +1,21 @@
+*{
+    box-sizing: border-box;
+}
+
+.SignIn-main{
+    padding: 0 100px;
+    margin: auto;
+    
+}
+.SignIn-inner-main{
+    margin: 80px auto 0px;
+    max-width:500px;
+    height: 630px;
+}
+.SignIn-text{
+    margin-top: 25px;
+    font-size: 50px;
+}
+@media(max-width:1080px){
+    
+}
