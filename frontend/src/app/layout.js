@@ -2,7 +2,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Inter } from 'next/font/google'
 import '../../lib/fontawesome'; // Adjust the path if needed
+import '../css/common.css'
 import Navbar from '../components/Navbar'
+import "@fontsource/inter"; 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
