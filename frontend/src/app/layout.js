@@ -1,8 +1,13 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Inter } from 'next/font/google'
+<<<<<<< HEAD
 import 'rsuite/dist/rsuite.min.css';
 
+=======
+import '../../lib/fontawesome'; // Adjust the path if needed
+import Navbar from '../components/Navbar'
+>>>>>>> b7657cb4565aaa46ead6f657d5758c277412afd7
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +34,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+<<<<<<< HEAD
       <head>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
@@ -37,6 +43,9 @@ export default function RootLayout({ children }) {
     <link rel="preconnect" href="https://fonts.gstatic.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet"/> 
       </head>
+=======
+      <Navbar/>
+>>>>>>> b7657cb4565aaa46ead6f657d5758c277412afd7
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >

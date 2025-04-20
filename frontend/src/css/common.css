@@ -2,20 +2,32 @@
     box-sizing: border-box;
 }
 
-.SignIn-main{
+/* Navbar */
+.Navbar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+
+/* SignIn-SignUp */
+.SignIn-SignUp-main{
     padding: 0 100px;
     margin: auto;
-    
 }
-.SignIn-inner-main{
+.SignIn-SignUp-inner-main{
     margin: 80px auto 0px;
     max-width:500px;
-    height: 630px;
+    height: 1200px;
+    background-image: url('../assets/SignInBackground Image.jpg');
+    background-size: cover;
+    background-position: center;
 }
-.SignIn-text{
-    margin-top: 25px;
-    font-size: 50px;
+.SignIn-SignUp-text{
+    margin-top: 50px;
+    font-size: 45px;
 }
 @media(max-width:1080px){
-    
+
 }

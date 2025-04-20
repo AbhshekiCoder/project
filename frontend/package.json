@@ -9,12 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "axios": "^1.8.4",
     "next": "15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-loader-spinner": "^6.1.6",
     "rsuite": "^5.79.1"
+=======
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "next": "15.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+>>>>>>> b7657cb4565aaa46ead6f657d5758c277412afd7
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
