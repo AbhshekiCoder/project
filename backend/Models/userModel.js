@@ -21,8 +21,14 @@ let UserSchema = new mongoose.Schema({
     },
     role:{
         type: String,
-        enum: ['manager', 'accountant', 'sellsMan'],
+        enum: [ 'Accountant', 'salesMan'],
+        required: true,
+        default: "Accountant"
+    },
+    distributorship:{
+        type: String,
         required: true
+
     }
 })
 

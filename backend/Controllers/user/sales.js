@@ -17,7 +17,7 @@ let sales = async(req, res)=>{
             quantity,
             price,
             date:  d + "," + time,
-         
+               
             imageType
         })
 
