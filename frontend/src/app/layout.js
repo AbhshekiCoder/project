@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono,Inter, Poppins, Outfit, Rubik } from "next/font/google";
 import "./globals.css";
 import '../../lib/fontawesome'; // Adjust the path if needed
-import '../css/common.css'
 import Navbar from '../components/Navbar'
 import "@fontsource/inter"; 
 
@@ -54,6 +53,10 @@ export default function RootLayout({ children }) {
         className={`${rubik.variable} ${geistSans.variable} ${geistMono.variable} ${inter.variable} ${outfit.variable} ${poppins.variable}  `}
       >
         {children}
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       </body>
     </html>
   )

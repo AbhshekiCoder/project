@@ -1,7 +1,56 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import '../../css/common.css'
+// import axios from 'axios'
+// import { Message } from 'rsuite'
+
+
+
 // import SignInBackground from '../../assets/SignInBackground.jpg'
 export default function SignUp() {
+	let [type, setType] = useState();
+
+         let signup = async(e) =>{
+			e.preventDefault()
+
+			let form = document.forms['signup'];
+			let name = form.name.value;
+			let email = form.email.value;
+			let password = form.password.value;
+			let phone = form.phone.value;
+			let role = form.role.value;
+		    let distributorship = form.distributorship.value;
+
+			let obj = {
+				name,
+				email,
+				password,
+				phone,
+				role,
+				distributorship
+			}
+			let result = await axios.post("http://localhost:5000/signup/signup", obj);
+			if(result.data.success){
+				setType("success")
+				document.getElementById('message').innerText = result.data.message;
+				document.querySelector('.message').style.display = "block";
+				setTimeout(() =>{
+					document.getElementById('message').style.display = "none";
+
+				},2000)
+				
+			}
+			else{
+				setType("warning")
+				document.getElementById('message').innerText = result.data.message;
+				document.querySelector('.message').style.display = "block";
+				setTimeout(() =>{
+					document.getElementById('message').style.display = "none";
+
+				},2000)
+			}
+
+		 }
     
   	return (
 		<div className='' style={{backgroundColor:"#ffeee3"}}>

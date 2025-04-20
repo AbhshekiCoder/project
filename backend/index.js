@@ -8,6 +8,9 @@ import inventoryRouter from './Routers/accountant/inventory.js';
 import product_fetch from './Routers/fetch/product.js';
 import salesRouter from './Routers/user/sales.js';
 import cors from 'cors'
+import managerSignup from './Routers/manager/signup.js';
+import managerRouter from './Routers/manager/login.js';
+
 
 const app = express();
 app.use(express.json());
@@ -20,6 +23,8 @@ app.use('/signin', loginRouter)
 app.use('/inventory', inventoryRouter)
 app.use('/product', product_fetch)
 app.use('/sales', salesRouter)
+app.use('/managerSignup', managerSignup)
+app.use('/managerSignin', managerRouter)
 MongoDBConnect()
 
 
@@ -39,6 +44,6 @@ MongoDBConnect()
 
 
 
-app.listen(process.env.PORT||3000, ()=>{
+app.listen(process.env.PORT||5000, ()=>{
     console.log(`server is running on port${process.env.PORT}`);
 })

@@ -5,13 +5,13 @@ import   bcrypt from 'bcrypt';
 
 
 let User = async(req, res)=>{
-    let {name, email, password, phone, role} = req.body;
+    let {name, email, password, phone, role, distributorship} = req.body;
 
     let newPassword = await bcrypt.hash(password, 10);
     try{
         let result = await userModel.findOne({email: email});
         if(result){
-            res.status(400).send({success: false, message: "user already registered"});
+            res.send({success: false, message: "user already registered"});
         }
         else{
             let user = new  userModel({
@@ -19,7 +19,8 @@ let User = async(req, res)=>{
                 email,
                 password: newPassword,
                 phone,
-                role
+                role,
+                distributorship
             })
     
             let result = await user.save();
@@ -28,7 +29,7 @@ let User = async(req, res)=>{
         }
        
     }catch(err){
-        res.status(400).send({success: false, message: err.message})
+        res.send({success: false, message: err.message})
 
     }
 
