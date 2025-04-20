@@ -1,6 +1,12 @@
-*{
-    box-sizing: border-box;
+/* Salesman */
+.Salesman-Inputs:focus{
+    box-shadow: #D9A5F9 0px 0px 0px 2px;
+    outline: none;
 }
+.Salesman-Button{
+    box-shadow: #D9A5F9 0px 0px 0px 2px;
+}
+
 
 /* Navbar */
 .Navbar{
@@ -23,15 +29,27 @@
     border: solid 2px #ffeee3;
     margin:69px auto 0;
     background-color: #fff9f6;
+    background-image: url(../assets/SignUpBackground.jpg);
+    background-size: cover;
+    background-position:center;
 }
 .SignIn-SignUp-inner-main{
-    margin: 50px auto 15px;
-    max-width:440px;
+    margin: 60px auto 15px;
+    max-width:400px;
     height: 580px;
 }
 .SignIn-SignUp-text{
     margin-top: 30px;
     font-size: 45px;
+}
+.SignUp-Common-Inputs:focus{
+    box-shadow: #FFD27F 0px 0px 0px 2px;
+}
+.SignUp-Common-Inputs{
+    outline: none;
+}
+.SignUp-Common-Buttons:hover{
+    box-shadow: #FFD27F 0px 0px 0px 2px;
 }
 @media(max-width:1080px){
 

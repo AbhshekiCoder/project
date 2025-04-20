@@ -17,8 +17,8 @@ export default function SignUp() {
 					<div className='pl-1 text-xl font-serif text-orange-600 '>
 						<h1>Email Id</h1>
 					</div>
-					<div className='mt-2 '>
-						<input type="email" name='email' required className='rounded-sm w-full border-2 border-orange-400 h-9 pl-2 text-md focus:outline-none focus:border-2 focus:border-amber-500' placeholder='👤 Enter email id' />
+					<div className='mt-2'>
+						<input type="email" name='email' required className='SignUp-Common-Inputs rounded-sm w-full border-2 border-orange-400 focus:border-orange-300 h-9 pl-2 text-md focus:outline-none ' placeholder='👤 Enter email id' />
 					</div>
 
 					{/* Password */}
@@ -26,8 +26,9 @@ export default function SignUp() {
 						<h1>Password</h1>
 					</div>
 					<div className='mt-2'>
-						<input type="text" name='Password' required className='border-orange-400 border-2 rounded-sm w-full  h-9 pl-2 text-md focus:outline-none focus:border-amber-500' placeholder='🔑 Enter Password' />
+						<input type="text" name='Password' required className='SignUp-Common-Inputs border-orange-400 focus:border-orange-300 border-2 rounded-sm w-full h-9 pl-2 text-md focus:outline-none ' placeholder='🔑 Enter Password' />
 					</div>
+
 
 					{/* Role */}
 					<div className='flex mt-7'>
@@ -38,7 +39,7 @@ export default function SignUp() {
 							</div>
 							<div className='mt-3'>
 								{/* role */}
-								<select name='role' required className='cursor-pointer focus:border-orange-600 border-orange-400 text-orange-700 border-2 rounded-md pl-2 pr-6 py-1.5'>
+								<select name='role' required className='cursor-pointer SignUp-Common-Inputs focus:border-orange-300 border-orange-400 text-orange-700 border-2 rounded-md pl-2 pr-6 py-1.5'>
 									<option className=' text-gray-700' value = "Salesman">Salesman</option>
 									<option className="text-gray-700"value = "Accountant">Accountant</option>
 								</select>
@@ -51,7 +52,7 @@ export default function SignUp() {
 							</div>
 							<div className='mt-3'>
 								{/* distributor */}
-								<select name='distributor' required className='cursor-pointer focus:border-orange-600 text-orange-700 border-orange-400 border-2 rounded-md pl-2 pr-9 py-1.5'>
+								<select name='distributor' required className='SignUp-Common-Inputs cursor-pointer outline-none focus:border-orange-300 text-orange-700 border-orange-400 border-2 rounded-md pl-2 pr-9 py-1.5'>
 									<option className=' text-gray-700' value="Mario">Mario</option>
 									<option className=' text-gray-700' value="Tops">Tops</option>
 									<option className=' text-gray-700' value="Balaji">Balaji</option>
@@ -66,7 +67,7 @@ export default function SignUp() {
 
 					{/* Submit */}
 					<div className='text-2xl font-semibold flex justify-center mt-20 '>
-						<button type='submit' className='cursor-pointer rounded-md  w-full border-2 text-gray-100 hover:text-orange-600 bg-orange-500 active:bg-orange-400 active:border-gray-200 active:text-gray-100 hover:bg-gray-200 hover:border-orange-500  border-orange-700' style={{height:'44px'}}>SignUp</button>
+						<button type='submit' className='SignUp-Common-Buttons cursor-pointer rounded-md  w-full border-2 text-gray-100 hover:text-orange-600 bg-orange-500 active:bg-orange-400 active:border-gray-200 active:text-gray-100 hover:bg-gray-200 hover:border-orange-500  border-orange-700' style={{height:'44px'}}>SignUp</button>
 					</div>
 					</form>
 				</div>

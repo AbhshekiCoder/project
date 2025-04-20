@@ -1,10 +1,34 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono,Inter, Poppins, Outfit, Rubik } from "next/font/google";
 import "./globals.css";
-import { Inter } from 'next/font/google'
 import '../../lib/fontawesome'; // Adjust the path if needed
 import '../css/common.css'
 import Navbar from '../components/Navbar'
 import "@fontsource/inter"; 
+
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-outfit',
+});
+
+const rubik = Rubik({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-rubik',
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,12 +39,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter', // optional but useful for using in Tailwind or CSS vars
-})
 
 export const metadata = {
   title: "Create Next App",
@@ -33,7 +51,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <Navbar/>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
+        className={`${rubik.variable} ${geistSans.variable} ${geistMono.variable} ${inter.variable} ${outfit.variable} ${poppins.variable}  `}
       >
         {children}
       </body>

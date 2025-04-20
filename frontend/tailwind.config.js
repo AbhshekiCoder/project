@@ -1,13 +1,19 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: [
-      "./pages/**/*.{js,ts,jsx,tsx}",
-      "./components/**/*.{js,ts,jsx,tsx}",
-      "./app/**/*.{js,ts,jsx,tsx}", // if using /app directory
-    ],
-    theme: {
-      extend: {},
+  content: [
+    './pages/**/*.{js,jsx}',
+    './components/**/*.{js,jsx}',
+    './app/**/*.{js,jsx}', // if you're using the App Router
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        inter: ['var(--font-inter)'],
+        poppins: ['var(--font-poppins)'],
+        outfit: ['var(--font-outfit)'],
+        rubik: ['var(--font-rubik)'],
+      },
     },
-    plugins: [],
-  };
-  
+  },
+  plugins: [],
+}
