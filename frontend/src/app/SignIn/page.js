@@ -5,60 +5,62 @@ import { faUsersLine } from '@fortawesome/free-solid-svg-icons';
 
 
 export default function SignIn() {
-  return (
-    <div className='SignIn-SignUp-main'>
-        <div className='SignIn-SignUp-inner-main border-gray-700 border-2 rounded-sm'>
-            {/* To add 50% transparency */}
-            <div className="absolute inset-0 bg-[url('/bg.jpg')] bg-cover bg-center opacity-50"></div>
+  	return (
+		<div className='' style={{backgroundColor:"#ffeee3"}}>
+  	  	<div className='SignIn-SignUp-main'>
+  	  	    <div className='SignIn-SignUp-inner-main rounded-md bg-white border-2 border-orange-600' style={{}}>
+				<div className='text-center text-orange-600 font-semibold'>
+					<h1 className='SignIn-SignUp-text '>SignIn</h1>
+				</div>
 
-            <div className='text-center font-stretch-condensed font-semibold'>
-                <h1 className='SignIn-SignUp-text'>SignIn</h1>
-            </div>
+				<div className='pl-12 pr-12 mt-10'>
+					<form action="">
+					{/* Email_ID */}
+					<div className='pl-1 flex text-xl text-orange-600 '>
+						<h1 className='font-inter'>Email Id</h1>
+						<h1 className='font--outfit'>Email Id</h1>
+						<h1 className='font--rubik'>Email Id</h1>
+						<h1 className='font--poppins'>Email Id</h1>
+					</div>
+					<div className='mt-2 '>
+						<input type="email" name='email' required className='SignUp-Common-Inputs rounded-sm w-full border-2 border-orange-400 focus:border-orange-300 h-9 pl-1.5 text-md focus:outline-none focus:border-2' placeholder='👤 Enter email id' />
+					</div>
 
-            <div className='pl-12 pr-12 mt-12'>
-                <form action="">
-                {/* Email_ID */}
-                <div className=' text-xl font-inter'>
-                    <h1>Email Id</h1>
-                </div>
-                
-                <div className='mt-2'>
-                    <input name='email' required type="email" className='rounded-sm w-full border h-9 pl-2 text-md' placeholder='👤 Enter gmail id' />
-                </div>
+					{/* Password */}
+					<div className='pl-1 text-xl mt-6 font-serif text-orange-600'>
+						<h1>Password</h1>
+					</div>
+					<div className='mt-2'>
+						<input type="text" name='Password' required className='SignUp-Common-Inputs border-orange-400 focus:border-orange-300 border-2 rounded-sm w-full  h-9 pl-1.5 text-md focus:outline-none' placeholder='🔑 Enter Password' />
+					</div>
 
-            {/* Password */}
-                <div className=' text-xl mt-6'>
-                    <h1>Password</h1>
-                </div>
-               
-                <div className='mt-2'>
-                    <input name='password' type="text" required className='rounded-sm w-full border h-9 pl-2 text-md' placeholder='🔑 Enter Password Key' />
-                </div>
+					{/* Role */}
+					<div className='mt-7 '>
+						{/* Employee role */}
+							<div className='pl-1.5 text-xl font-serif text-orange-600'>
+								<h1>Role</h1>
+							</div>
+							<div className='mt-2 '>
+								{/* role */}
+								<select name='role' required className='SignUp-Common-Inputs cursor-pointer focus:border-orange-300 border-orange-400 text-orange-700 border-2 rounded-md pl-2 pr-6 py-1.5'>
+									<option className='text-gray-700 ' value = "Salesman">Salesman</option>
+									<option className="text-gray-700 "value = "Accountant">Accountant</option>
+								</select>
+							</div>
+					</div>
 
-            {/* Role */}
+					<div className='flex justify-center mt-12'>
+						<h1 className='w-fit cursor-pointer font-semibold text-gray-600'><u className='cursor-pointer'>LogIn</u> With Your Organisation</h1>
+					</div>
 
-                {/* Employee role */}
-                <div className='mt-7'>
-                    <div className=' text-xl '>
-                        <h1>Select Employee Role</h1>
-                    </div>
-                    <div className='mt-3'>
-                        <select name='role' className='cursor-pointer border-2 border-gray-500 rounded-md pl-2 pr-6 py-1.5'>
-                            <option className=' text-gray-700' value="Salesman">Salesman</option>
-                            <option className="text-gray-700"value="Accountant">Accountant</option>
-                        </select>
-                    </div>
-                </div>
-
-           
-
-            {/* Submit */}
-            <div className='text-3xl font-medium flex justify-center mt-16 '>
-                <button type='submit' className='cursor-pointer rounded-md h-12 w-72 border-2 text-gray-700 bg-emerald-200 border-gray-600'>SignIn</button>
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
-  )
+					{/* Submit */}
+					<div className='text-2xl font-semibold flex justify-center mt-4 '>
+						<button type='submit' className='SignUp-Common-Buttons cursor-pointer rounded-md  w-full border-2 text-gray-100 hover:text-orange-600 bg-orange-500 active:bg-orange-400 active:border-gray-200 active:text-gray-100 hover:bg-gray-200 hover:border-orange-500  border-orange-700' style={{height:'44px'}}>SignIn</button>
+					</div>
+					</form>
+				</div>
+  	  	    </div>
+  	  	</div>
+			</div>
+  	)
 }

@@ -1,8 +1,36 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono,Inter, Poppins, Outfit, Rubik } from "next/font/google";
 import "./globals.css";
-import { Inter } from 'next/font/google'
+
 import 'rsuite/dist/rsuite.min.css';
 
+import '../../lib/fontawesome'; // Adjust the path if needed
+import Navbar from '../components/Navbar'
+import "@fontsource/inter"; 
+
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-outfit',
+});
+
+const rubik = Rubik({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-rubik',
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,12 +41,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter', // optional but useful for using in Tailwind or CSS vars
-})
 
 export const metadata = {
   title: "Create Next App",
@@ -37,8 +59,9 @@ export default function RootLayout({ children }) {
     <link rel="preconnect" href="https://fonts.gstatic.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet"/> 
       </head>
+      <Navbar/>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
+        className={`${rubik.variable} ${geistSans.variable} ${geistMono.variable} ${inter.variable} ${outfit.variable} ${poppins.variable}  `}
       >
         {children}
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

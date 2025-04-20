@@ -1,8 +1,8 @@
 "use client"
 import React, { useState } from 'react'
 import '../../css/common.css'
-import axios from 'axios'
-import { Message } from 'rsuite'
+// import axios from 'axios'
+// import { Message } from 'rsuite'
 
 
 
@@ -53,55 +53,59 @@ export default function SignUp() {
 		 }
     
   	return (
-  	  	<div className='SignIn-main '>
-  	  	    <div className='SignIn-inner-main border-gray-700 border-2 rounded-sm'>
-				<div className='text-center '>
-					<h1 className='SignIn-text'>SignUp</h1>
+		<div className='' style={{backgroundColor:"#ffeee3"}}>
+  	  	<div className='SignIn-SignUp-main'>
+  	  	    <div className='SignIn-SignUp-inner-main rounded-md bg-gray-100 border-2 border-orange-600' style={{}}>
+				<div className='text-center text-orange-600 font-semibold'>
+					<h1 className='SignIn-SignUp-text'>SignUp</h1>
 				</div>
 
-				<div className='pl-12 pr-12 mt-16 '>
+				<div className='pl-12 pr-12 mt-10'>
 					<form action="">
 					{/* Email_ID */}
-					<div className=' text-xl  font-inter'>
+					<div className='pl-1 text-xl font-serif text-orange-600 '>
 						<h1>Email Id</h1>
 					</div>
 					<div className='mt-2'>
-						<input type="text" className='rounded-sm w-full border h-9 pl-2 text-md' placeholder='👤 Enter email id' />
+						<input type="email" name='email' required className='SignUp-Common-Inputs rounded-sm w-full border-2 border-orange-400 focus:border-orange-300 h-9 pl-2 text-md focus:outline-none ' placeholder='👤 Enter email id' />
 					</div>
 
 					{/* Password */}
-					<div className=' text-xl mt-6'>
-						<h5>Password</h5>
+					<div className='pl-1 text-xl mt-6 font-serif text-orange-600'>
+						<h1>Password</h1>
 					</div>
 					<div className='mt-2'>
-						<input type="text" required className='rounded-sm w-full border h-9 pl-2 text-md' placeholder='🔑 Enter Password' />
+						<input type="text" name='Password' required className='SignUp-Common-Inputs border-orange-400 focus:border-orange-300 border-2 rounded-sm w-full h-9 pl-2 text-md focus:outline-none ' placeholder='🔑 Enter Password' />
 					</div>
+
 
 					{/* Role */}
 					<div className='flex mt-7'>
 						{/* Employee role */}
 						<div className='w-1/2'>
-							<div className=' text-xl '>
-								<h5>Select Employee Role</h5>
+							<div className='pl-1.5 text-xl font-serif text-orange-600'>
+								<h1>Role</h1>
 							</div>
 							<div className='mt-3'>
-								<select className='cursor-pointer border-2 border-gray-500 rounded-md pl-2 pr-6 py-1.5'>
-									<option className=' text-gray-700' value="Accountant">Salesman</option>
-									<option className="text-gray-700"value="Accountant">Accountant</option>
+								{/* role */}
+								<select name='role' required className='cursor-pointer SignUp-Common-Inputs focus:border-orange-300 border-orange-400 text-orange-700 border-2 rounded-md pl-2 pr-6 py-1.5'>
+									<option className=' text-gray-700' value = "Salesman">Salesman</option>
+									<option className="text-gray-700"value = "Accountant">Accountant</option>
 								</select>
 							</div>
 						</div>
 						{/* Distributor role Select */}
-						<div className='w-1/2 pl-3.5'> 
-							<div className=' text-xl '>
-								<h5>Select Distributor</h5>
+						<div className='w-1/2 pl-8'> 
+							<div className='pl-1.5 text-xl font-serif text-orange-600'>
+								<h1>Distributor</h1>
 							</div>
 							<div className='mt-3'>
-								<select className='cursor-pointer border-2 border-gray-500 rounded-md pl-2 pr-6 py-1.5'>
-									<option className=' text-gray-700' value="Accountant">Mario</option>
-									<option className=' text-gray-700' value="Accountant">Tops</option>
-									<option className=' text-gray-700' value="Accountant">Balaji</option>
-									<option className="text-gray-700"value="Accountant">Goodrick</option>
+								{/* distributor */}
+								<select name='distributor' required className='SignUp-Common-Inputs cursor-pointer outline-none focus:border-orange-300 text-orange-700 border-orange-400 border-2 rounded-md pl-2 pr-9 py-1.5'>
+									<option className=' text-gray-700' value="Mario">Mario</option>
+									<option className=' text-gray-700' value="Tops">Tops</option>
+									<option className=' text-gray-700' value="Balaji">Balaji</option>
+									<option className="text-gray-700"value="Goodrick">Goodrick</option>
 								</select>
 							</div>
 						</div>
@@ -111,12 +115,13 @@ export default function SignUp() {
 					</div>
 
 					{/* Submit */}
-					<div className='text-3xl font-medium flex justify-center mt-20 '>
-						<button className='cursor-pointer rounded-md h-12 w-72 border-2 text-gray-700 bg-emerald-200 border-gray-600'>SignIn</button>
+					<div className='text-2xl font-semibold flex justify-center mt-20 '>
+						<button type='submit' className='SignUp-Common-Buttons cursor-pointer rounded-md  w-full border-2 text-gray-100 hover:text-orange-600 bg-orange-500 active:bg-orange-400 active:border-gray-200 active:text-gray-100 hover:bg-gray-200 hover:border-orange-500  border-orange-700' style={{height:'44px'}}>SignUp</button>
 					</div>
+					</form>
 				</div>
   	  	    </div>
   	  	</div>
-		</>
+			</div>
   	)
 }
