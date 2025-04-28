@@ -10,6 +10,9 @@ import salesRouter from './Routers/user/sales.js';
 import cors from 'cors'
 import managerSignup from './Routers/manager/signup.js';
 import managerRouter from './Routers/manager/login.js';
+import cartRouter from './Routers/user/cart.js';
+import userinfo from './Routers/fetch/user.js';
+import cart_fetch from './Routers/fetch/cart.js';
 
 
 const app = express();
@@ -25,6 +28,9 @@ app.use('/product', product_fetch)
 app.use('/sales', salesRouter)
 app.use('/managerSignup', managerSignup)
 app.use('/managerSignin', managerRouter)
+app.use('/cart', cartRouter)
+app.use('/user', userinfo)
+app.use('/cart_fetch', cart_fetch)
 MongoDBConnect()
 
 

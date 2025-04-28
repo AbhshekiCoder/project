@@ -20,13 +20,7 @@ let inventorySchema = new mongoose.Schema({
               require: true
 
        },
-       image:{
-        
-       },
-       type:{
-              type: String,
-              require: true
-       },
+      
        CGST:{
               type: Number,
 
@@ -40,7 +34,7 @@ let inventorySchema = new mongoose.Schema({
        },
        distributor:{
               type: String,
-              enum: [""]
+            
 
        }
 })

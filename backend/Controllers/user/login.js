@@ -20,7 +20,7 @@ let login = async (req, res) =>{
             if(result1){
                
                 let token = jwt.sign({id: result.email}, process.env.JWT_SECRET, {expiresIn: "1h"});
-                res.status(200).send({success: true, message: "login successfully", token: token})
+                res.status(200).send({success: true, message: "login successfully", token: token, role: result.role, data: result})
 
             }
             else{

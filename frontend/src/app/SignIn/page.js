@@ -1,66 +1,119 @@
-import React from 'react'
-import '../../css/common.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsersLine } from '@fortawesome/free-solid-svg-icons';
-
-
+"use client"
+import React, { useReducer, useState } from 'react';
+import LINK from 'next/link';
+import { Message } from 'rsuite';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import {userinfo}  from '../../feature/userinfo';
 export default function SignIn() {
-  	return (
-		<div className='' style={{backgroundColor:"#ffeee3"}}>
-  	  	<div className='SignIn-SignUp-main'>
-  	  	    <div className='SignIn-SignUp-inner-main rounded-md bg-white border-2 border-orange-600' style={{}}>
-				<div className='text-center text-orange-600 font-semibold'>
-					<h1 className='SignIn-SignUp-text '>SignIn</h1>
-				</div>
+  let dispatch = useDispatch()
+  let router = useRouter()
+  let [type, setType] = useState("success")
+  let [message, setMessage] = useState()
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
 
-				<div className='pl-12 pr-12 mt-10'>
-					<form action="">
-					{/* Email_ID */}
-					<div className='pl-1 flex text-xl text-orange-600 '>
-						<h1 className='font-inter'>Email Id</h1>
-						<h1 className='font--outfit'>Email Id</h1>
-						<h1 className='font--rubik'>Email Id</h1>
-						<h1 className='font--poppins'>Email Id</h1>
-					</div>
-					<div className='mt-2 '>
-						<input type="email" name='email' required className='SignUp-Common-Inputs rounded-sm w-full border-2 border-orange-400 focus:border-orange-300 h-9 pl-1.5 text-md focus:outline-none focus:border-2' placeholder='👤 Enter email id' />
-					</div>
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
-					{/* Password */}
-					<div className='pl-1 text-xl mt-6 font-serif text-orange-600'>
-						<h1>Password</h1>
-					</div>
-					<div className='mt-2'>
-						<input type="text" name='Password' required className='SignUp-Common-Inputs border-orange-400 focus:border-orange-300 border-2 rounded-sm w-full  h-9 pl-1.5 text-md focus:outline-none' placeholder='🔑 Enter Password' />
-					</div>
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    let result = await axios.post("http://localhost:5000/signin/signin", formData)
+    if(!result.data.success){
+      setType("warning")
+      setMessage(result.data.message)
+      document.querySelector(".message").style.display = "block"
+      setTimeout(() =>{
+        document.querySelector('.message').style.display = "none"
+  
+      },2000)
+  
+    }
+    else{
+      console.log(result.data.data)
+      dispatch(userinfo(result.data.data))
+      setType("success")
 
-					{/* Role */}
-					<div className='mt-7 '>
-						{/* Employee role */}
-							<div className='pl-1.5 text-xl font-serif text-orange-600'>
-								<h1>Role</h1>
-							</div>
-							<div className='mt-2 '>
-								{/* role */}
-								<select name='role' required className='SignUp-Common-Inputs cursor-pointer focus:border-orange-300 border-orange-400 text-orange-700 border-2 rounded-md pl-2 pr-6 py-1.5'>
-									<option className='text-gray-700 ' value = "Salesman">Salesman</option>
-									<option className="text-gray-700 "value = "Accountant">Accountant</option>
-								</select>
-							</div>
-					</div>
+      setMessage(result.data.message)
 
-					<div className='flex justify-center mt-12'>
-						<h1 className='w-fit cursor-pointer font-semibold text-gray-600'><u className='cursor-pointer'>LogIn</u> With Your Organisation</h1>
-					</div>
+      document.querySelector(".message").style.display = "block"
+      localStorage.setItem("token", result.data.token)
+      
+      if(result.data.role == "salesMan"){
+        router.push("./Salesman")
+      }
+      
+      
+    }
+      
+    
+    
+  };
 
-					{/* Submit */}
-					<div className='text-2xl font-semibold flex justify-center mt-4 '>
-						<button type='submit' className='SignUp-Common-Buttons cursor-pointer rounded-md  w-full border-2 text-gray-100 hover:text-orange-600 bg-orange-500 active:bg-orange-400 active:border-gray-200 active:text-gray-100 hover:bg-gray-200 hover:border-orange-500  border-orange-700' style={{height:'44px'}}>SignIn</button>
-					</div>
-					</form>
-				</div>
-  	  	    </div>
-  	  	</div>
-			</div>
-  	)
+  return (
+    <div className="min-h-screen bg-[#E8F5E9] flex items-center justify-center px-4">
+       <div className='w-fit h-fit modal message'>
+	<Message showIcon type = {type} className="w-fit m-auto">
+         {message}
+	</Message>
+
+	</div>
+      <div className="bg-white shadow-xl rounded-xl w-full max-w-md p-8">
+        <h2 className="text-2xl font-bold text-[#2E7D32] mb-6 text-center">Sign In to Your Account</h2>
+        <form onSubmit={handleSubmit} className="space-y-5">
+
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email Address</label>
+            <input
+              type="email"
+              name="email"
+              required
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
+              placeholder="you@example.com"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <input
+              type="password"
+              name="password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
+              placeholder="••••••••"
+            />
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full bg-[#2E7D32] text-white py-2 rounded-lg font-semibold hover:bg-[#1B5E20] transition"
+          >
+            Sign In
+          </button>
+        </form>
+
+        {/* Link to Signup */}
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don’t have an account?{' '}
+          <LINK href="./SignUp" className="text-[#2E7D32] font-semibold hover:underline">
+            Sign up here
+          </LINK>
+        </p>
+      </div>
+    </div>
+  );
 }

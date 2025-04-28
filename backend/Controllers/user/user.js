@@ -6,6 +6,7 @@ import   bcrypt from 'bcrypt';
 
 let User = async(req, res)=>{
     let {name, email, password, phone, role, distributorship} = req.body;
+    console.log(role)
 
     let newPassword = await bcrypt.hash(password, 10);
     try{
@@ -29,6 +30,7 @@ let User = async(req, res)=>{
         }
        
     }catch(err){
+        console.log(err.message)
         res.send({success: false, message: err.message})
 
     }

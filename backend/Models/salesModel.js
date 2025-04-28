@@ -30,9 +30,7 @@ let salesSchema = new mongoose.Schema({
         enum: ["half", "paid", "unpaid"],
         default: "unpaid"
     },
-    image:{
-
-    },
+    
     type:{
         type: String,
         enum: ["sale", "purchase"],
@@ -42,10 +40,7 @@ let salesSchema = new mongoose.Schema({
     date:{
         
     },
-    imageType:{
-        type: String,
-        require: true
-    },
+    
     CGST:{
         type: Number,
 

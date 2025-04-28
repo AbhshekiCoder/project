@@ -7,6 +7,6 @@ import authentication from '../../middleware/authentication.js';
 
 let inventoryRouter = express.Router();
 
-inventoryRouter.post('/inventory', authentication, upload.single('file'), inventory)
+inventoryRouter.post('/inventory',  inventory)
 
 export default inventoryRouter;

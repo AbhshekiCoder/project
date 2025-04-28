@@ -1,24 +1,55 @@
-import React from 'react'
+"use client"
+import React, { useReducer } from 'react'
 import Image from 'next/image'
 import LINK from "next/link";
 import CompanyLogo from '../assets/CompanyLogo.jpg'
-import '../css/common.css'
+import { useDispatch, useSelector } from 'react-redux';
+import { userinfo } from '../feature/userinfo';
+
+
 export default function Navbar() {
+	let dispatch = useDispatch()
+	let user = useSelector((state) => state.name.value)
+     let logout = () =>{
+		localStorage.removeItem('token');
+		dispatch(userinfo(''))
+
+	 }
   	return (
-  	    <div className='fixed top-0 Navbar flex justify-between items-center' style={{boxShadow:"rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",}}>
-			<div className='Navbar-logo'>
-				<Image src={CompanyLogo} className='h-full w-full ' style={{borderTopLeftRadius:"15px",borderBottomLeftRadius:"10px"}} alt="" />
-			</div>
-			
-			<div className='mr-20 flex gap-4 '>
-				
-          		<div className="mr-7 ml-4 ">
-          		 	<button className="border-2 cursor-pointer font-semibold h-10 w-24 rounded-lg text-orange-800 hover:text-gray-100  hover:bg-orange-500 active:bg-orange-300 border-orange-600 hover:border-gray-400" style={{fontSize:"20px"}}><LINK href= "./SignUp">SignUp</LINK></button>
-          		</div>
-				<div >
-            		<button className="SignUp-Common-Buttons cursor-pointer font-semibold h-10 w-24 rounded-lg text-orange-800 bg-orange-200 hover:bg-orange-400 hover:text-white active:bg-orange-300 border-2 border-orange-400 hover:border-gray-100" style={{fontSize:"20px",backgroundColor:""}}><LINK href= "./SignIn">SignIn</LINK></button>
-          		</div>
-			</div>
-  	    </div>
+
+		<nav className="bg-green-400 h-[70px] px-8 flex items-center justify-between shadow-xl sticky-top">
+		{/* Logo */}
+		<div className="text-white text-2xl font-bold tracking-wide">
+		  <span className="text-[#A5D6A7]"><LINK href = "/">Green</LINK></span>Zone
+		</div>
+  
+		{/* Buttons */}
+		<div className="flex space-x-4">
+			{user?<><div className='flex items-center text-white font-bold'>Hii {user.name}</div> <button
+		
+			className="bg-[#A5D6A7] text-black font-semibold px-5 py-2 rounded-lg shadow hover:bg-[#A5D6A7] hover:scale-105 transition duration-300 max-md:px-2 max-md:py-1 max-sm:w-36  "
+			style={{backgroundColor: "#A5D6A7"}}
+			onClick={logout}
+		  >
+			Logout
+		  </button></>:<>
+		  <LINK
+			href="./SignIn"
+			className="bg-[#A5D6A7] text-black font-semibold px-5 py-2 rounded-lg shadow hover:bg-[#A5D6A7] hover:scale-105 transition duration-300"
+			style={{backgroundColor: "#A5D6A7"}}
+		  >
+			Sign In
+		  </LINK>
+		  <LINK
+			href="./SignUp"
+			className="bg-[rgb(94 148 0)] text-white font-semibold px-5 py-2 rounded-lg shadow hover:bg-[#2E7D32] hover:scale-105 transition duration-300"
+			style={{backgroundColor: "rgb(94 148 0)"}}
+		  >
+			Sign Up
+		  </LINK>
+		  </>}
+		
+		</div>
+	  </nav>
   	)
 }

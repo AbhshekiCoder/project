@@ -1,127 +1,175 @@
 "use client"
 import React, { useState } from 'react'
-import '../../css/common.css'
-// import axios from 'axios'
-// import { Message } from 'rsuite'
+import axios from 'axios'
+import { Message } from 'rsuite'
+import { useRouter } from 'next/navigation'
+let url = process.env.URL
+
 
 
 
 // import SignInBackground from '../../assets/SignInBackground.jpg'
+
+
 export default function SignUp() {
-	let [type, setType] = useState();
+	let router = useRouter()
+  let [type, setType] = useState("success")
+  let [message, setMessage] = useState()
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+    role: 'salesMan',
+    distributorship: 'Balaji',
+  });
 
-         let signup = async(e) =>{
-			e.preventDefault()
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+ 
 
-			let form = document.forms['signup'];
-			let name = form.name.value;
-			let email = form.email.value;
-			let password = form.password.value;
-			let phone = form.phone.value;
-			let role = form.role.value;
-		    let distributorship = form.distributorship.value;
+  const handleSubmit = async(e) => {
+    e.preventDefault();
 
-			let obj = {
-				name,
-				email,
-				password,
-				phone,
-				role,
-				distributorship
-			}
-			let result = await axios.post("http://localhost:5000/signup/signup", obj);
-			if(result.data.success){
-				setType("success")
-				document.getElementById('message').innerText = result.data.message;
-				document.querySelector('.message').style.display = "block";
-				setTimeout(() =>{
-					document.getElementById('message').style.display = "none";
+	let result = await axios.post("http://localhost:5000/signup/signup", formData)
+    if(!result.data.success){
+		setType("warning")
+		setMessage(result.data.message)
+		document.querySelector(".message").style.display = "block"
+		setTimeout(() =>{
+			document.querySelector('.message').style.display = "none"
 
-				},2000)
-				
-			}
-			else{
-				setType("warning")
-				document.getElementById('message').innerText = result.data.message;
-				document.querySelector('.message').style.display = "block";
-				setTimeout(() =>{
-					document.getElementById('message').style.display = "none";
+		},2000)
 
-				},2000)
-			}
+	}
+	else{
+		setType("success")
+		setMessage(result.data.message)
+		document.querySelector(".message").style.display = "block"
+		setTimeout(() =>{
+			document.querySelector('.message').style.display = "none"
 
-		 }
+		},2000)
+		router.push('./SignIn')
+	}
     
-  	return (
-		<div className='' style={{backgroundColor:"#ffeee3"}}>
-  	  	<div className='SignIn-SignUp-main'>
-  	  	    <div className='SignIn-SignUp-inner-main rounded-md bg-gray-100 border-2 border-orange-600' style={{}}>
-				<div className='text-center text-orange-600 font-semibold'>
-					<h1 className='SignIn-SignUp-text'>SignUp</h1>
-				</div>
+  };
 
-				<div className='pl-12 pr-12 mt-10'>
-					<form action="">
-					{/* Email_ID */}
-					<div className='pl-1 text-xl font-serif text-orange-600 '>
-						<h1>Email Id</h1>
-					</div>
-					<div className='mt-2'>
-						<input type="email" name='email' required className='SignUp-Common-Inputs rounded-sm w-full border-2 border-orange-400 focus:border-orange-300 h-9 pl-2 text-md focus:outline-none ' placeholder='👤 Enter email id' />
-					</div>
+  return (
+	<> 
+	
+    <div className="min-h-screen bg-[#E8F5E9] grid items-center justify-center px-4">
+    <div className='w-fit h-fit modal message'>
+	<Message showIcon type = {type} className="w-fit m-auto">
+         {message}
+	</Message>
 
-					{/* Password */}
-					<div className='pl-1 text-xl mt-6 font-serif text-orange-600'>
-						<h1>Password</h1>
-					</div>
-					<div className='mt-2'>
-						<input type="text" name='Password' required className='SignUp-Common-Inputs border-orange-400 focus:border-orange-300 border-2 rounded-sm w-full h-9 pl-2 text-md focus:outline-none ' placeholder='🔑 Enter Password' />
-					</div>
+	</div>
+	
+      <div className="bg-white shadow-xl rounded-xl w-full max-w-md p-8">
+        <h2 className="text-2xl font-bold text-[#2E7D32] mb-6 text-center">Create an Account</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
 
+          {/* Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Full Name</label>
+            <input
+              type="text"
+              name="name"
+              required
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
+              placeholder="Enter your name"
+            />
+          </div>
 
-					{/* Role */}
-					<div className='flex mt-7'>
-						{/* Employee role */}
-						<div className='w-1/2'>
-							<div className='pl-1.5 text-xl font-serif text-orange-600'>
-								<h1>Role</h1>
-							</div>
-							<div className='mt-3'>
-								{/* role */}
-								<select name='role' required className='cursor-pointer SignUp-Common-Inputs focus:border-orange-300 border-orange-400 text-orange-700 border-2 rounded-md pl-2 pr-6 py-1.5'>
-									<option className=' text-gray-700' value = "Salesman">Salesman</option>
-									<option className="text-gray-700"value = "Accountant">Accountant</option>
-								</select>
-							</div>
-						</div>
-						{/* Distributor role Select */}
-						<div className='w-1/2 pl-8'> 
-							<div className='pl-1.5 text-xl font-serif text-orange-600'>
-								<h1>Distributor</h1>
-							</div>
-							<div className='mt-3'>
-								{/* distributor */}
-								<select name='distributor' required className='SignUp-Common-Inputs cursor-pointer outline-none focus:border-orange-300 text-orange-700 border-orange-400 border-2 rounded-md pl-2 pr-9 py-1.5'>
-									<option className=' text-gray-700' value="Mario">Mario</option>
-									<option className=' text-gray-700' value="Tops">Tops</option>
-									<option className=' text-gray-700' value="Balaji">Balaji</option>
-									<option className="text-gray-700"value="Goodrick">Goodrick</option>
-								</select>
-							</div>
-						</div>
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email Address</label>
+            <input
+              type="email"
+              name="email"
+              required
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
+              placeholder="you@example.com"
+            />
+          </div>
 
+          {/* Phone */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+            <input
+              type="tel"
+              name="phone"
+              required
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
+              placeholder="9876543210"
+            />
+          </div>
 
+          {/* Password */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <input
+              type="password"
+              name="password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
+              placeholder="••••••••"
+            />
+          </div>
 
-					</div>
+          {/* Role */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Select Role</label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
+            >
+              <option value="salesMan">salesMan</option>
+              <option value="Accountant">Accountant</option>
+            </select>
+          </div>
 
-					{/* Submit */}
-					<div className='text-2xl font-semibold flex justify-center mt-20 '>
-						<button type='submit' className='SignUp-Common-Buttons cursor-pointer rounded-md  w-full border-2 text-gray-100 hover:text-orange-600 bg-orange-500 active:bg-orange-400 active:border-gray-200 active:text-gray-100 hover:bg-gray-200 hover:border-orange-500  border-orange-700' style={{height:'44px'}}>SignUp</button>
-					</div>
-					</form>
-				</div>
-  	  	    </div>
-  	  	</div>
-			</div>
-  	)
+          {/* Distributorship */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Distributorship Name</label>
+			<select
+              name="distributorship"
+              value={formData.distributorship}
+              onChange={handleChange}
+              className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
+            >
+              <option value="Balaji">Balaji</option>
+              <option value="Namkeen">Namkeen</option>
+			  <option value="Colgate">Colgate</option>
+			  <option value="Coachlate">Coachlate</option>
+            </select>
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full bg-[#2E7D32] text-white py-2 rounded-lg font-semibold hover:bg-[#1B5E20] transition"
+          >
+            Create Account
+          </button>
+        </form>
+      </div>
+    </div>
+	</>
+  );
 }
