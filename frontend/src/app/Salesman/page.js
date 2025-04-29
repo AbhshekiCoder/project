@@ -31,7 +31,7 @@ export default function SalesmanPage() {
       console.error('Error fetching products:', error);
     }
   };
-generateProducts()
+
   
 
   // Filtering Functions
@@ -66,7 +66,7 @@ generateProducts()
       
     }
 
-    let result = await axios.post("http://localhost:5000/cart/cart", obj)
+    let result = await axios.post("https://project-aec1.onrender.com/cart/cart", obj)
     if(result.data.success){
       alert(result.data.message)
       dispatch(cartinfo(cart + 1))
@@ -83,7 +83,7 @@ generateProducts()
       let token = localStorage.getItem("token");
       console.log(token)
       if(token){
-        let result = await axios.post("http://localhost:5000/user/user", {token: token});
+        let result = await axios.post("https://project-aec1.onrender.com/user/user", {token: token});
         console.log(result.data)
         if(result.data.success){
           dispatch(userinfo(result.data.data));
@@ -107,7 +107,7 @@ generateProducts()
       data()
       dispatch(cartinfo(localStorage.getItem("cart")||0))
       console.log("hello")
-    
+      generateProducts()
   
     },[])
 
