@@ -1,4 +1,4 @@
-import managerModel from "../../Models/ManagerModel.js";
+import managerModel from "../../Models/managerModel.js";
 import bcrypt from "bcrypt";
 
 
