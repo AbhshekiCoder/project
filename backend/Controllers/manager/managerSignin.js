@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv';
-import managerModel from '../../Models/ManagerModel.js';
+import managerModel from '../../Models/managerModel.js';
 
 
 dotenv.config();
