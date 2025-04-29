@@ -22,7 +22,7 @@ export default function Home() {
     let token = localStorage.getItem("token");
   
     if(token){
-      let result = await axios.post("http://localhost:5000/user/user", {token: token});
+      let result = await axios.post("https://project-aec1.onrender.com/user/user", {token: token});
       if(result.data.success){
         dispatch(userinfo(result.data.data));
         console.log(result.data.success)

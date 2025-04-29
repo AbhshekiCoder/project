@@ -21,7 +21,7 @@ export default function SalesmanPage() {
   // Fetch Products from API
   const generateProducts = async() => {
     try {
-      const result = await axios.get('http://localhost:5000/product/product');
+      const result = await axios.get('https://project-aec1.onrender.com/product/product');
       if (result.data.success) {
         let array = result.data.data.filter(Element => Element.distributor == user.distributorship)
         console.log(result.data.data)

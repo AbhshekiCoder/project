@@ -7,7 +7,7 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState()
   let data = async() =>{
     let token = localStorage.getItem("token")
-    let result = await axios.post("http://localhost:5000/cart_fetch/cart_fetch", {token: token});
+    let result = await axios.post("https://project-aec1.onrender.com/cart_fetch/cart_fetch", {token: token});
     console.log(result.data)
     if(result.data.success){
       setCartItems(result.data.data)
@@ -23,7 +23,7 @@ export default function Cart() {
       product_id: productId,
       quantity: num + 1
     }
-    let result = await axios.post("http://localhost:5000/cart/cart", obj);
+    let result = await axios.post("https://project-aec1.onrender.com/cart/cart", obj);
     console.log(result.data)
     
     data()
@@ -38,7 +38,7 @@ export default function Cart() {
       product_id: productId,
       quantity: num - 1
     }
-    let result = await axios.post("http://localhost:5000/cart/cart", obj);
+    let result = await axios.post("https://project-aec1.onrender.com/cart/cart", obj);
     console.log(result.data)
     
     data()
