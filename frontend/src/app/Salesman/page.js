@@ -105,7 +105,7 @@ export default function SalesmanPage() {
     useEffect(() =>{
   
       data()
-      dispatch(cartinfo(localStorage.getItem("cart")||0))
+      dispatch(cartinfo(Number(localStorage.getItem("cart"))||0))
       console.log("hello")
       generateProducts()
   

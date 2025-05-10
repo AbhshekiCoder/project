@@ -7,15 +7,14 @@ const inventory = async(req, res) =>{
     
 
     try{
-        console.log(req.file)
-        let _filename = fileURLToPath(import.meta.url);
-        let _dirname = path.dirname(_filename);
+      
        
-        const products = req.body;
+        const {products} = req.body;
+        console.log(products);
 
         // Insert many products at once
        
-        let result =  await inventoryModel.insertMany(products);
+        let result =  await inventoryModel.insertOne(products);
         res.status(200).send({success: true, message: "successfully inventory added"});
     }catch(err){
         res.status(400).send({success: false, message: err.message})

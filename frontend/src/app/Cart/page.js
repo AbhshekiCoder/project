@@ -2,8 +2,11 @@
 import Navbar from '@/components/Navbar';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export default function Cart() {
+  let user = useSelector((state) => state.name.value)
+  
   const [cartItems, setCartItems] = useState()
   let data = async() =>{
     let token = localStorage.getItem("token")
@@ -40,6 +43,7 @@ export default function Cart() {
     }
     let result = await axios.post("https://project-aec1.onrender.com/cart/cart", obj);
     console.log(result.data)
+   
     
     data()
 
@@ -51,12 +55,28 @@ export default function Cart() {
         item.id === productId ? { ...item, [field]: value } : item
       )
     );
+    console.log(cartItems)
   };
 
-  const handleSellProduct = (product) => {
-    console.log('Sold Product:', product);
-    alert(`Sold ${product.name} to ${product.customerName} (Customer ID: ${product.customerId})`);
-    setCartItems((prev) => prev.filter((item) => item.id !== product.id));
+  const handleSellProduct = async(product) => {
+    
+    console.log(user)
+    let obj = {
+      name: product.name,
+      price: product.price,
+      product_id: product.product_id,
+      user_id: user,
+      customerId: product.customerId,
+      date: product.date,
+      quantity: product.quantity,
+      customerName: product.customerName,
+     
+    }
+    let result = await axios.post("http://localhost:5000/sales/sales", obj);
+    if(result.data.success){
+      alert("updated successfully")
+    }
+    
 
   };
   useEffect(()=>{
@@ -110,6 +130,14 @@ export default function Cart() {
                   onChange={(e) => handleCustomerChange(item.id, 'customerId', e.target.value)}
                   className="border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-green-400"
                 />
+                  <input
+                  type="date"
+                 
+                  value={item.date}
+                  onChange={(e) => handleCustomerChange(item.id, 'date', e.target.value)}
+                  className="border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-green-400"
+                />
+                 
               </div>
             </div>
 

@@ -6,25 +6,35 @@ import salesModel from "../../Models/salesModel.js";
 let sales = async(req, res)=>{
 
 
-  let {product_name, product_id, accountant_id, quantity, price, imageType} = req.body;
-  let d = new Date().getDate() + "/" +  month + "/" + new Date().getFullYear();
+  let {name, product_id, quantity, price, customerName, user_id, customerId , date} = req.body;
+  
+  let month = new Date().getMonth() + 1;
+ 
   let time = new Date().getHours() + ":" + new Date().getMinutes();
+  let salesMan = user_id.name;
+  let distributor = user_id.distributorship;
     try{
         let sales = new salesModel({
-            product_name,
+            product_name:name,
             product_id,
-            accountant_id,
             quantity,
             price,
-            date:  d + "," + time,
+            date,
+            time:time,
+            customerId,
+            customerName,
+            salesMan,
+            distributor
+
                
-            imageType
+            
         })
 
         let result = await sales.save();
         res.status(200).send({success: true, message: "successfully added"})
     }catch(err){
         res.status(400).send({success: false, message: err.message})
+        console.log(err.message)
     }
 
 }

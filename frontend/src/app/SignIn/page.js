@@ -49,6 +49,9 @@ export default function SignIn() {
       if(result.data.role == "salesMan"){
         router.push("./Salesman")
       }
+      if(result.data.role == "Accountant"){
+        router.push("./Accountant")
+      }
       
       
     }

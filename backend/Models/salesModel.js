@@ -38,7 +38,11 @@ let salesSchema = new mongoose.Schema({
 
     },
     date:{
+    
         
+    },
+    time:{
+
     },
     
     CGST:{
@@ -52,6 +56,31 @@ let salesSchema = new mongoose.Schema({
  HSN:{
         type: Number
  },
+ customerId:{
+
+ },
+ customerName:{
+
+ },
+ mode:{
+    type: String,
+    enum: ["cash", "check", "upi", "card"],
+    default: "cash"
+
+ },
+ salesMan:{
+
+ },
+ distributor:{
+
+ },
+ ref:{
+
+ },
+ amount:{
+
+ }
+
  
 
 });

@@ -13,6 +13,11 @@ import managerRouter from './Routers/manager/login.js';
 import cartRouter from './Routers/user/cart.js';
 import userinfo from './Routers/fetch/user.js';
 import cart_fetch from './Routers/fetch/cart.js';
+import sales_fetch from './Routers/accountant/sales_fetch.js';
+import sales_update_router from './Routers/accountant/sales_update.js';
+import purchase_update_router from './Routers/accountant/purchase_update.js';
+import purchaseRouter from './Routers/fetch/purchase.js';
+
 
 
 const app = express();
@@ -31,6 +36,10 @@ app.use('/managerSignin', managerRouter)
 app.use('/cart', cartRouter)
 app.use('/user', userinfo)
 app.use('/cart_fetch', cart_fetch)
+app.use('/sales_fetch',  sales_fetch)
+app.use('/sales/update', sales_update_router)
+app.use('/purchase/update', purchase_update_router)
+app.use('/purchase', purchaseRouter)
 MongoDBConnect()
 
 
