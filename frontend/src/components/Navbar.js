@@ -34,7 +34,7 @@ export default function Navbar() {
 			Logout
 		  </button></>:<>
 		  <LINK
-			href="./SignIn"
+			href="./"
 			className="bg-[#A5D6A7] text-black font-semibold px-5 py-2 rounded-lg shadow hover:bg-[#A5D6A7] hover:scale-105 transition duration-300"
 			style={{backgroundColor: "#A5D6A7"}}
 		  >

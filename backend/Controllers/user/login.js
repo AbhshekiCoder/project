@@ -13,7 +13,7 @@ let login = async (req, res) =>{
     try{
         let result = await userModel.findOne({email: email});
         if(!result){
-            res.status(400).send({success: false, message: "you are not regsitered"});
+            res.send({success: false, message: "you are not regsitered"});
         }
         else{
             let result1 = await bcrypt.compare(password, result.password);
@@ -24,7 +24,7 @@ let login = async (req, res) =>{
 
             }
             else{
-                res.status(400).send({success: false, message: " password  didn't match"});
+                res.send({success: false, message: " password  didn't match"});
             }
     
         }

@@ -17,6 +17,11 @@ import sales_fetch from './Routers/accountant/sales_fetch.js';
 import sales_update_router from './Routers/accountant/sales_update.js';
 import purchase_update_router from './Routers/accountant/purchase_update.js';
 import purchaseRouter from './Routers/fetch/purchase.js';
+import inventoryUpdate from './Routers/accountant/inventoryUpdate.js';
+import inventoryDelete from './Routers/accountant/inventory_delete.js';
+import delete_sales from './Routers/accountant/delete_sales.js';
+import inventoryModel from './Models/inventoryModel.js';
+import delete_purchase from './Routers/accountant/delete_purchase.js';
 
 
 
@@ -40,6 +45,10 @@ app.use('/sales_fetch',  sales_fetch)
 app.use('/sales/update', sales_update_router)
 app.use('/purchase/update', purchase_update_router)
 app.use('/purchase', purchaseRouter)
+app.use('/inventory/update', inventoryUpdate)
+app.use('/inventory/delete', inventoryDelete);
+app.use('/sales/delete', delete_sales )
+app.use('/purchase/delete', delete_purchase)
 MongoDBConnect()
 
 
@@ -51,6 +60,13 @@ MongoDBConnect()
 
 
 
+app.post('/inventory', async(req, res)=>{
+   let result = await inventoryModel.insertMany(req.body)
+   if(result){
+    res.send({success: true, message: "successfully added"})
+   }
+
+})
 
 
 

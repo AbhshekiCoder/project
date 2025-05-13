@@ -24,6 +24,16 @@ let cartSchema = new mongoose.Schema({
         type: String,
         require: true
 
+    },
+    CGST:{
+        type: Number
+
+    },
+    SGST:{
+        type: Number
+    },
+    HSN:{
+        type: Number
     }
 })
 let cartModel = mongoose.model("cart", cartSchema);

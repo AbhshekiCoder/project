@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import Navbar from '@/components/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ export default function SalesmanPage() {
   let dispatch = useDispatch()
   let user =  useSelector((state) => state.name.value)
   let cart = useSelector((state) => state.cart.value)
+  const [product, setProduct] = useState([])
   const [productsData, setProductsData] = useState([]);
   const [search, setSearch] = useState('');
   const [priceFilter, setPriceFilter] = useState('all');
@@ -19,18 +20,7 @@ export default function SalesmanPage() {
   const productsPerPage = 20;
 
   // Fetch Products from API
-  const generateProducts = async() => {
-    try {
-      const result = await axios.get('https://project-aec1.onrender.com/product/product');
-      if (result.data.success) {
-        let array = result.data.data.filter(Element => Element.distributor == user.distributorship)
-        console.log(result.data.data)
-        setProductsData(array);
-      }
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
-  };
+ 
 
   
 
@@ -52,21 +42,27 @@ export default function SalesmanPage() {
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-  const handleSell = async(product) => {
+  const handleSell = async(product, id) => {
     console.log(product)
     let token = localStorage.getItem("token");
+    let quantity = document.getElementById(id).value;
     
     let obj = {
       
       name: product.name,
       price: product.price,
-      quantity: 1,
+      quantity: quantity,
       user_id: token,
-      product_id: product.HSN
+      product_id: product._id,
+      CGST: product.CGST,
+      SGST: product.SGST,
+      HSN: product.HSN
+
+      
       
     }
 
-    let result = await axios.post("https://project-aec1.onrender.com/cart/cart", obj)
+    let result = await axios.post("http://localhost:5000/cart/cart", obj)
     if(result.data.success){
       alert(result.data.message)
       dispatch(cartinfo(cart + 1))
@@ -79,7 +75,10 @@ export default function SalesmanPage() {
     
   };
   
-    let data = async() =>{
+    
+ 
+      let fetch_data = useCallback(async()=>{
+        
       let token = localStorage.getItem("token");
       console.log(token)
       if(token){
@@ -101,15 +100,36 @@ export default function SalesmanPage() {
      
     
   
-    }
-    useEffect(() =>{
-  
-      data()
+    
+      
       dispatch(cartinfo(Number(localStorage.getItem("cart"))||0))
       console.log("hello")
-      generateProducts()
+       
+    try {
+      const result = await axios.get('https://project-aec1.onrender.com/product/product');
+      if (result.data.success) {
+       
+        setProduct(result.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
   
-    },[])
+      
+     
+    },[dispatch, router]);
+useEffect(()=>{
+  fetch_data();
+  
+
+},[fetch_data])
+useEffect(()=>{
+  if (user?.distributorship && product.length > 0) {
+    const filtered = product.filter(product => product.distributor === user.distributorship);
+    setProductsData(filtered);
+  }
+
+}, [user, product])
 
   return (
     <>
@@ -141,7 +161,7 @@ export default function SalesmanPage() {
 
       {/* Product Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
-        {currentProducts?currentProducts.map((product) => (
+        {currentProducts&&currentProducts.length>0?currentProducts.map((product) => (
           <div
             key={product._id}
             className="bg-white border border-green-100 shadow-sm rounded-lg p-3 hover:shadow-md transition"
@@ -150,8 +170,12 @@ export default function SalesmanPage() {
             <p className="text-xs text-gray-600">Price: ₹{product.price}</p>
             <p className="text-xs text-gray-600">Qty: {product.quantity}</p>
             <p className="text-xs text-gray-600">Distributorship: {product.distributor}</p>
+              {/* Quantity Control */}
+              <div className="flex items-center gap-2 mb-3">
+                <input type='number' className='w-full h-10 border text-center ' placeholder='quantity' min={0} id = {product._id}/>
+              </div>
             <button
-              onClick={() => handleSell(product)}
+              onClick={() => handleSell(product, product._id)}
               className="mt-2 w-full text-sm bg-green-600 text-white py-1.5 rounded hover:bg-green-700 transition"
             >
               Add to Cart

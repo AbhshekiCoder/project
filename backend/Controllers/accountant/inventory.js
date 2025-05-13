@@ -9,13 +9,27 @@ const inventory = async(req, res) =>{
     try{
       
        
-        const {products} = req.body;
-        console.log(products);
+        const {name, price, quantity, distributor, box, SGST, HSN, CGST, date} = req.body;
+        
+        let obj = new inventoryModel({ 
+            name,
+            price, 
+            quantity,
+            box,
+            CGST,
+            SGST,
+            HSN,
+            distributor,
+            date
+        })
+        console.log(date)
 
         // Insert many products at once
        
-        let result =  await inventoryModel.insertOne(products);
-        res.status(200).send({success: true, message: "successfully inventory added"});
+        let result =  await obj.save();
+        let data = await inventoryModel.find()
+        console.log(data)
+        res.status(200).send({success: true, message: "successfully inventory added", data: data});
     }catch(err){
         res.status(400).send({success: false, message: err.message})
     }

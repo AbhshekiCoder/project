@@ -35,7 +35,7 @@ export default function SignUp() {
   const handleSubmit = async(e) => {
     e.preventDefault();
 
-	let result = await axios.post("https://project-aec1.onrender.com/signup/signup", formData)
+	let result = await axios.post("http:///localhost:5000/signup/signup", formData)
     if(!result.data.success){
 		setType("warning")
 		setMessage(result.data.message)
@@ -54,7 +54,7 @@ export default function SignUp() {
 			document.querySelector('.message').style.display = "none"
 
 		},2000)
-		router.push('./SignIn')
+		router.push('./')
 	}
     
   };

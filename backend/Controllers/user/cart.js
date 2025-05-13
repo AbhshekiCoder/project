@@ -3,9 +3,9 @@ import cartModel from '../../Models/cartModel.js';
 import jwt from 'jsonwebtoken';
 
 let cart = async(req, res) =>{
-    let {name, price, quantity, user_id, product_id} = req.body;
+    let {name, price, quantity, user_id, product_id, CGST, SGST, HSN} = req.body;
     let user = jwt.decode(user_id);
-    console.log(product_id, user_id)
+    console.log( CGST)
 
     try{
         let result = await cartModel.findOne({$and:[{product_id: product_id}, {user_id: user.id}]});
@@ -17,7 +17,12 @@ let cart = async(req, res) =>{
                 price,
                 quantity,
                 user_id: user.id,
-                product_id
+                product_id,
+                CGST,
+                SGST,
+                HSN
+
+
             })
             let result = await cart.save();
     

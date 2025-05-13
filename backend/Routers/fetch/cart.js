@@ -4,6 +4,6 @@ import cart from '../../Controllers/fetch/cart.js';
 
 let cart_fetch = express.Router();
 
-cart_fetch.get('/cart_fetch', cart);
+cart_fetch.get('/:token', cart);
 
 export default cart_fetch;

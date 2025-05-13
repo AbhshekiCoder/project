@@ -3,15 +3,15 @@ import salesModel from "../../Models/salesModel.js";
 const purchase_update = async (req, res) => {
     try {
         const { purchaseData } = req.body;
+        console.log(purchaseData)
         
-        // Validate request data
-        if (!purchaseData || !Array.isArray(purchaseData.products) ){
+         if (!purchaseData || !Array.isArray(purchaseData.products) ){
             return res.status(400).json({
                 success: false,
                 message: "Invalid request data structure"
             });
         }
-
+         
         // Create array of promises for insertion
         const insertionPromises = purchaseData.products.map(async (element) => {
             const purchaseDoc = {
@@ -23,14 +23,15 @@ const purchase_update = async (req, res) => {
                 CGST: element.CGST || 0,
                 SGST: element.SGST || 0,
                 HSN: element.HSN || '',
-                payment: "paid",
+             
                 type: "purchase",
                 distributor: purchaseData.distributor,
-                payment_type: purchaseData.paymentMode,
+                payment_type: purchaseData.payment_type,
                 ref: purchaseData.paymentRef,
                 amount: element.price * element.quantity,
                 date: purchaseData.date,
-                salesMan: "Accountant"
+                salesMan: "Accountant",
+                mode: purchaseData.payment_type
             };
 
             return salesModel.create(purchaseDoc);
@@ -50,6 +51,7 @@ const purchase_update = async (req, res) => {
             message: "Purchase created successfully",
             data: result
         });
+        
 
     } catch (err) {
         console.error("Purchase Error:", err.message);

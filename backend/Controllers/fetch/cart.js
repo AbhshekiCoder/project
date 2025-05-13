@@ -2,7 +2,8 @@ import jwt from "jsonwebtoken"
 import cartModel from "../../Models/cartModel.js"
 
 let cart = async(req, res) =>{
-    let {token} = req.body;
+    let {token} = req.params;
+    console.log(token)
     let user = jwt.decode(token);
 
     try{
