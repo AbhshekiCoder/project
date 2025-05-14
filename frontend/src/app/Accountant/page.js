@@ -7,7 +7,7 @@ import * as XLSX from 'xlsx';
 import url from '@/misc/url';
 const Accountant = () => {
   // Base URL for API calls
-  const url = "${url}";  
+   
   // State for UI controls
   const [activeTab, setActiveTab] = useState('products');
   const [selectedDistributor, setSelectedDistributor] = useState('All');
@@ -18,7 +18,7 @@ const Accountant = () => {
   });
   const [todayPurchases, setTodayPurchases] = useState([]);
 const [todaySales, setTodaySales] = useState([]);
-  
+
   // Data states
   const [products, setProducts] = useState([]);
   const [purchases, setPurchases] = useState([]);
@@ -329,6 +329,7 @@ const clearDateRange = () => {
         const inventoryResponse = await axios.get(`${url}product/product`);
         if (inventoryResponse.data.success) {
           setProducts(inventoryResponse.data.data);
+          console.log(inventoryResponse.data.data)
         }
       }
     } catch (err) {
