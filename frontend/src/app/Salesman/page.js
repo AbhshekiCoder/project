@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { cartinfo } from '../../feature/cart';
 import { userinfo } from '@/feature/userinfo';
 import { useRouter } from 'next/navigation';
+import url from '@/misc/url';
 export default function SalesmanPage() {
   let router = useRouter()
   let dispatch = useDispatch()
@@ -21,7 +22,7 @@ export default function SalesmanPage() {
 
   // Fetch Products from API
  
-
+console.log(process.env.URL)
   
 
   // Filtering Functions
@@ -62,7 +63,7 @@ export default function SalesmanPage() {
       
     }
 
-    let result = await axios.post("http://localhost:5000/cart/cart", obj)
+    let result = await axios.post(`${url}cart/cart`, obj)
     if(result.data.success){
       alert(result.data.message)
       dispatch(cartinfo(cart + 1))
@@ -82,7 +83,7 @@ export default function SalesmanPage() {
       let token = localStorage.getItem("token");
       console.log(token)
       if(token){
-        let result = await axios.post("https://project-aec1.onrender.com/user/user", {token: token});
+        let result = await axios.post(`${url}user/user`, {token: token});
         console.log(result.data)
         if(result.data.success){
           dispatch(userinfo(result.data.data));
@@ -106,7 +107,7 @@ export default function SalesmanPage() {
       console.log("hello")
        
     try {
-      const result = await axios.get('https://project-aec1.onrender.com/product/product');
+      const result = await axios.get(`${url}product/product`);
       if (result.data.success) {
        
         setProduct(result.data.data);

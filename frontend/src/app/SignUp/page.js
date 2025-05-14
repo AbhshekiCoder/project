@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { Message } from 'rsuite'
 import { useRouter } from 'next/navigation'
-let url = process.env.URL
+import url from '@/misc/url'
 
 
 
@@ -35,7 +35,7 @@ export default function SignUp() {
   const handleSubmit = async(e) => {
     e.preventDefault();
 
-	let result = await axios.post("http:///localhost:5000/signup/signup", formData)
+	let result = await axios.post(`${url}signup/signup`, formData)
     if(!result.data.success){
 		setType("warning")
 		setMessage(result.data.message)

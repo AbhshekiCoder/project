@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import {userinfo}  from '../../feature/userinfo';
+import url from '@/misc/url';
 export default function SignIn() {
   let dispatch = useDispatch()
   let router = useRouter()
@@ -25,7 +26,7 @@ export default function SignIn() {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    let result = await axios.post("https://project-aec1.onrender.com/signin/signin", formData)
+    let result = await axios.post(`${url}signin/signin`, formData)
     if(!result.data.success){
       setType("warning")
       setMessage(result.data.message)

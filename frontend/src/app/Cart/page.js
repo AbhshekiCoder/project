@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 export default function Cart() {
   let user = useSelector((state) => state.name.value)
   let dispatch = useDispatch()
-  const url = "http://localhost:5000/";
+  const url = "${url}";
   const [cartItems, setCartItems] = useState([])
   
   let data = async() =>{
@@ -63,7 +63,7 @@ export default function Cart() {
       }));
 
       // Send all products at once (you might need to adjust your backend endpoint)
-      let result = await axios.post("http://localhost:5000/sales/sales", {
+      let result = await axios.post(`${url}sales/sales`, {
         products: productsData
       });
       
@@ -71,6 +71,7 @@ export default function Cart() {
         alert("All products sold successfully");
         // Refresh cart data
         data();
+        localStorage.removeItem("cart")
       }
     } catch (error) {
       console.error("Error selling products:", error);
@@ -84,7 +85,7 @@ export default function Cart() {
       let token = localStorage.getItem("token");
       console.log(token)
       if(token){
-        let result = await axios.post("https://project-aec1.onrender.com/user/user", {token: token});
+        let result = await axios.post(`${url}/user/user`, {token: token});
         console.log(result.data)
         if(result.data.success){
           dispatch(userinfo(result.data.data));

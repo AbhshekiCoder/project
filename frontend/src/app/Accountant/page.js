@@ -362,7 +362,10 @@ const clearDateRange = () => {
         payment: paymentUpdate.status,
         payment_type: paymentUpdate.mode,
         ref: paymentUpdate.ref,
-        date: paymentUpdate.date
+        date: paymentUpdate.date,
+        price: paymentUpdate.price,
+        quantity: paymentUpdate.quantity,
+        amount: paymentUpdate.amount
       };
 
       const response = await axios.put(`${url}sales/update/${paymentUpdate.id}`, updateData);
@@ -409,8 +412,15 @@ const clearDateRange = () => {
         updates: {
           payment: bulkUpdate.status,
           payment_type: bulkUpdate.mode,
+          quantity: sale.quantity,
           ref: bulkUpdate.ref,
-          date: bulkUpdate.date
+          
+          date: bulkUpdate.date,
+    
+          price: sale.price,
+          amount: sale.quantity * sale.price,
+          product_name: sale.product_name,
+          
         }
       }));
     
@@ -1938,170 +1948,192 @@ const handlePurchaseDelete = async(id) =>{
       )}
 
       {/* Purchase Modal */}
-    {showPurchaseForm && (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <h3 className="text-xl mb-4 font-semibold">Add Bulk Purchase</h3>
-        
-        <div className="space-y-3">
-          <div>
-            <label className="block text-sm font-medium mb-1">Products</label>
-            <select
-              multiple
-              className="w-full border p-2 rounded h-48"
-              onChange={(e) => {
-                const selected = Array.from(e.target.selectedOptions)
-                  .map(option => JSON.parse(option.value));
-                handleBulkPurchaseAdd(selected);
-              }}
-            >
-              {products
-                .filter(p => selectedDistributor === 'All' || p.distributor === selectedDistributor)
-                .map((product) => (
-                  <option 
-                    key={product._id} 
-                    value={JSON.stringify(product)}
-                  >
-                    {product.name} (₹{product.price})
-                  </option>
-                ))}
-            </select>
-            <p className="text-sm text-gray-500 mt-1">Hold CTRL to select multiple products</p>
+
+{showPurchaseForm && (
+  <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+    <div className="bg-white p-6 rounded shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <h3 className="text-xl mb-4 font-semibold">Add Bulk Purchase</h3>
+      
+      <div className="space-y-3">
+        <div>
+          <div className="flex justify-between items-center mb-1">
+            <label className="block text-sm font-medium">Products</label>
+            <div className="w-1/2">
+              <input
+                type="text"
+                placeholder="Search products..."
+                className="w-full border p-2 rounded text-sm"
+                onChange={(e) => {
+                  const searchTerm = e.target.value.toLowerCase();
+                  const productSelect = document.getElementById('productSelect');
+                  if (productSelect) {
+                    Array.from(productSelect.options).forEach(option => {
+                      const product = JSON.parse(option.value);
+                      const matchesSearch = product.name.toLowerCase().includes(searchTerm);
+                      option.style.display = matchesSearch ? '' : 'none';
+                    });
+                  }
+                }}
+              />
+            </div>
           </div>
+          <select
+            id="productSelect"
+            multiple
+            className="w-full border p-2 rounded h-48"
+            onChange={(e) => {
+              const selected = Array.from(e.target.selectedOptions)
+                .map(option => JSON.parse(option.value));
+              handleBulkPurchaseAdd(selected);
+            }}
+          >
+            {products
+              .filter(p => selectedDistributor === 'All' || p.distributor === selectedDistributor)
+              .map((product) => (
+                <option 
+                  key={product._id} 
+                  value={JSON.stringify(product)}
+                >
+                  {product.name} (₹{product.price})
+                </option>
+              ))}
+          </select>
+          <p className="text-sm text-gray-500 mt-1">Hold CTRL to select multiple products</p>
+        </div>
 
-          {newPurchase.products.length > 0 && (
-            <>
-              <div className="border p-3 rounded">
-                <h4 className="font-medium mb-2">Selected Products</h4>
-                <table className="w-full border">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="p-2 border">Product</th>
-                      <th className="p-2 border">Price</th>
-                      <th className="p-2 border">Qty</th>
-                      <th className="p-2 border">Box</th>
-                      <th className="p-2 border">CGST</th>
-                      <th className="p-2 border">SGST</th>
-                      <th className="p-2 border">HSN</th>
+        {/* Rest of the purchase form remains the same */}
+        {newPurchase.products.length > 0 && (
+          <>
+            <div className="border p-3 rounded">
+              <h4 className="font-medium mb-2">Selected Products</h4>
+              <table className="w-full border">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="p-2 border">Product</th>
+                    <th className="p-2 border">Price</th>
+                    <th className="p-2 border">Qty</th>
+                    <th className="p-2 border">Box</th>
+                    <th className="p-2 border">CGST</th>
+                    <th className="p-2 border">SGST</th>
+                    <th className="p-2 border">HSN</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {newPurchase.products.map((product, index) => (
+                    <tr key={index}>
+                      <td className="p-2 border">{product.name}</td>
+                      <td className="p-2 border">₹{product.price}</td>
+                      <td className="p-2 border">
+                        <input
+                          type="number"
+                          min="1"
+                          className="w-20 border p-1 rounded"
+                          value={product.quantity}
+                          onChange={(e) => 
+                            handleProductQuantityChange(index, parseInt(e.target.value) || 1)
+                          }
+                        />
+                      </td>
+                      <td className="p-2 border">{product.box}</td>
+                      <td className="p-2 border">{product.CGST}%</td>
+                      <td className="p-2 border">{product.SGST}%</td>
+                      <td className="p-2 border">{product.HSN}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {newPurchase.products.map((product, index) => (
-                      <tr key={index}>
-                        <td className="p-2 border">{product.name}</td>
-                        <td className="p-2 border">₹{product.price}</td>
-                        <td className="p-2 border">
-                          <input
-                            type="number"
-                            min="1"
-                            className="w-20 border p-1 rounded"
-                            value={product.quantity}
-                            onChange={(e) => 
-                              handleProductQuantityChange(index, parseInt(e.target.value) || 1)
-                            }
-                          />
-                        </td>
-                        <td className="p-2 border">{product.box}</td>
-                        <td className="p-2 border">{product.CGST}%</td>
-                        <td className="p-2 border">{product.SGST}%</td>
-                        <td className="p-2 border">{product.HSN}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Payment Mode</label>
-                    <select
-                      className="w-full border p-2 rounded"
-                      value={newPurchase.paymentMode}
-                      onChange={(e) => setNewPurchase({...newPurchase, paymentMode: e.target.value})}
-                    >
-                      {paymentModes.map((mode) => (
-                        <option key={mode} value={mode}>{mode.charAt(0).toUpperCase() + mode.slice(1)}</option>
-                      ))}
-                    </select>
-                  </div>
+            {/* Rest of the form fields... */}
+            <div>
+              <label className="block text-sm font-medium mb-1">Payment Mode</label>
+              <select
+                className="w-full border p-2 rounded"
+                value={newPurchase.paymentMode}
+                onChange={(e) => setNewPurchase({...newPurchase, paymentMode: e.target.value})}
+              >
+                {paymentModes.map((mode) => (
+                  <option key={mode} value={mode}>{mode.charAt(0).toUpperCase() + mode.slice(1)}</option>
+                ))}
+              </select>
+            </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      {newPurchase.paymentMode === 'cash' ? 'Amount' : 
-                       newPurchase.paymentMode === 'cheque' ? 'Cheque No.' : 
-                       'Transaction ID'}
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border p-2 rounded"
-                      value={newPurchase.paymentRef}
-                      onChange={(e) => setNewPurchase({...newPurchase, paymentRef: e.target.value})}
-                    />
-                  </div>
-                   <div>
-      <label className="block text-sm font-medium mb-1">Payment Status</label>
-      <select
-        className="w-full border p-2 rounded"
-        value={newPurchase.paymentStatus}
-        onChange={(e) => setNewPurchase({...newPurchase, paymentStatus: e.target.value})}
-      >
-        <option value="paid">Paid</option>
-        <option value="unpaid">unpaid</option>
-        <option value="half-paid">Half Paid</option>
-      </select>
-    </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                {newPurchase.paymentMode === 'cash' ? 'Amount' : 
+                 newPurchase.paymentMode === 'cheque' ? 'Cheque No.' : 
+                 'Transaction ID'}
+              </label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded"
+                value={newPurchase.paymentRef}
+                onChange={(e) => setNewPurchase({...newPurchase, paymentRef: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Payment Status</label>
+              <select
+                className="w-full border p-2 rounded"
+                value={newPurchase.paymentStatus}
+                onChange={(e) => setNewPurchase({...newPurchase, paymentStatus: e.target.value})}
+              >
+                <option value="paid">Paid</option>
+                <option value="unpaid">unpaid</option>
+                <option value="half-paid">Half Paid</option>
+              </select>
+            </div>
 
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Distributor</label>
-                    <select
-                      className="w-full border p-2 rounded"
-                      value={newPurchase.distributor}
-                      onChange={(e) => setNewPurchase({...newPurchase, distributor: e.target.value})}
-                      required
-                    >
-                      <option value="">Select Distributor</option>
-                      {distributors.filter(d => d !== 'All').map((dist) => (
-                        <option key={dist} value={dist}>{dist}</option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Date</label>
-                    <input 
-                      type="date"
-                      className="w-full border p-2 rounded" 
-                      value={newPurchase.date} 
-                      onChange={(e) => setNewPurchase({...newPurchase, date: e.target.value})}
-                      required
-                    />
-                  </div>
-                </>
-              )}
+            <div>
+              <label className="block text-sm font-medium mb-1">Distributor</label>
+              <select
+                className="w-full border p-2 rounded"
+                value={newPurchase.distributor}
+                onChange={(e) => setNewPurchase({...newPurchase, distributor: e.target.value})}
+                required
+              >
+                <option value="">Select Distributor</option>
+                {distributors.filter(d => d !== 'All').map((dist) => (
+                  <option key={dist} value={dist}>{dist}</option>
+                ))}
+              </select>
             </div>
             
-            <div className="flex justify-end space-x-2 mt-4">
-              <button 
-                className="px-4 py-2 rounded border hover:bg-gray-100 transition" 
-                onClick={() => {
-                  resetPurchaseForm();
-                  setShowPurchaseForm(false);
-                }}
-              >
-                Cancel
-              </button>
-              <button 
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition" 
-                onClick={handlePurchaseSubmit}
-                disabled={newPurchase.products.length === 0 || loading}
-              >
-                {loading ? 'Adding...' : 'Add Purchase'}
-              </button>
+            <div>
+              <label className="block text-sm font-medium mb-1">Date</label>
+              <input 
+                type="date"
+                className="w-full border p-2 rounded" 
+                value={newPurchase.date} 
+                onChange={(e) => setNewPurchase({...newPurchase, date: e.target.value})}
+                required
+              />
             </div>
-          </div>
-        </div>
-      )}
-
+          </>
+        )}
+      </div>
+      
+      <div className="flex justify-end space-x-2 mt-4">
+        <button 
+          className="px-4 py-2 rounded border hover:bg-gray-100 transition" 
+          onClick={() => {
+            resetPurchaseForm();
+            setShowPurchaseForm(false);
+          }}
+        >
+          Cancel
+        </button>
+        <button 
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition" 
+          onClick={handlePurchaseSubmit}
+          disabled={newPurchase.products.length === 0 || loading}
+        >
+          {loading ? 'Adding...' : 'Add Purchase'}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
       {/* Payment Update Modal */}
       {paymentUpdate.id && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
