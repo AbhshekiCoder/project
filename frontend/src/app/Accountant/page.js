@@ -4,11 +4,10 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 
-
+import url from '@/misc/url';
 const Accountant = () => {
   // Base URL for API calls
-  const url = "http://localhost:5000/";
-  
+  const url = "${url}";  
   // State for UI controls
   const [activeTab, setActiveTab] = useState('products');
   const [selectedDistributor, setSelectedDistributor] = useState('All');
@@ -197,7 +196,7 @@ const [todaySales, setTodaySales] = useState([]);
         }
         
         // Fetch sales (sales with type=sale)
-        const salesResponse = await axios.get("http://localhost:5000/sales_fetch/sales_fetch");
+        const salesResponse = await axios.get(`${url}sales_fetch/sales_fetch`);
         if (salesResponse.data.success) {
           setSales(salesResponse.data.data);
           console.log(salesResponse.data.data);
@@ -427,12 +426,12 @@ const clearDateRange = () => {
       const responses = await Promise.all(
         updates.map(update => 
          
-          axios.put(`http://localhost:5000/sales/update/${update.id}`,{obj: update.updates})
+          axios.put(`${url}sales/update/${update.id}`,{obj: update.updates})
           
         )
       );
 
-      const salesResponse = await axios.get(`http://localhost:5000/sales_fetch/sales_fetch`);
+      const salesResponse = await axios.get(`${url}sales_fetch/sales_fetch`);
         if (salesResponse.data.success) {
           setSales(salesResponse.data.data);
            filterTodaysTransactions()

@@ -4,6 +4,7 @@ import { userinfo } from '@/feature/userinfo';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {cartinfo} from '../../feature/cart'
 
 export default function Cart() {
   let user = useSelector((state) => state.name.value)
@@ -72,6 +73,7 @@ export default function Cart() {
         // Refresh cart data
         data();
         localStorage.removeItem("cart")
+        dispatch(cartinfo(0))
       }
     } catch (error) {
       console.error("Error selling products:", error);
