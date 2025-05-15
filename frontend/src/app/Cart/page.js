@@ -5,11 +5,11 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {cartinfo} from '../../feature/cart'
-
+import url from '@/misc/url';
 export default function Cart() {
   let user = useSelector((state) => state.name.value)
   let dispatch = useDispatch()
-  const url = "${url}";
+  
   const [cartItems, setCartItems] = useState([])
   
   let data = async() =>{

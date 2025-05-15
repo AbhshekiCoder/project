@@ -23,6 +23,7 @@ const purchase_update = async (req, res) => {
                 CGST: element.CGST || 0,
                 SGST: element.SGST || 0,
                 HSN: element.HSN || '',
+                payment: purchaseData.payment,
              
                 type: "purchase",
                 distributor: purchaseData.distributor,

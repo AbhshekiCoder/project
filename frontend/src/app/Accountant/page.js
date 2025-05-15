@@ -286,13 +286,15 @@ const clearDateRange = () => {
       }
       setLoading(true);
       
-      const purchaseData = {
+     const purchaseData = {
   ...newPurchase,
   product_name: newPurchase.products.map(p => p.name).join(', '),
   product_id: newPurchase.products[0]?.id || '',
   price: newPurchase.products.reduce((sum, p) => sum + (p.price * p.quantity), 0),
   quantity: newPurchase.products.reduce((sum, p) => sum + p.quantity, 0),
-  payment: newPurchase.paymentStatus, // Use the payment status from state
+  box: newPurchase.products.reduce((sum, p) => sum + (p.box || 0), 0),
+  itemsPerBox: newPurchase.products[0]?.itemsPerBox || 1, // Include items per box
+  payment: newPurchase.paymentStatus,
   type: 'purchase',
   date: newPurchase.date,
   CGST: newPurchase.products.reduce((sum, p) => sum + (p.CGST || 0), 0),
@@ -459,24 +461,25 @@ const clearDateRange = () => {
   };
 
   // Product selection for purchase
-   const handleBulkPurchaseAdd = useCallback((selectedProducts) => {
-    const productsWithDetails = selectedProducts.map(product => ({
-      id: product._id,
-      name: product.name,
-      price: product.price,
-      quantity: product.quantity || 1, // Default to 1 if not specified
-      box: product.box || 1,
-      CGST: product.CGST || 0,
-      SGST: product.SGST || 0,
-      HSN: product.HSN || ''
-    }));
-    
-    setNewPurchase(prev => ({
-      ...prev,
-      products: productsWithDetails,
-      distributor: selectedProducts[0]?.distributor || ''
-    }));
-  }, []);
+  const handleBulkPurchaseAdd = useCallback((selectedProducts) => {
+  const productsWithDetails = selectedProducts.map(product => ({
+    id: product._id,
+    name: product.name,
+    price: product.price,
+    quantity: product.quantity || 1, // Default to 1 if not specified
+    itemsPerBox: product.itemsPerBox || 1, // Default items per box
+    box: Math.ceil((product.quantity || 1) / (product.itemsPerBox || 1)), // Calculate initial boxes
+    CGST: product.CGST || 0,
+    SGST: product.SGST || 0,
+    HSN: product.HSN || ''
+  }));
+  
+  setNewPurchase(prev => ({
+    ...prev,
+    products: productsWithDetails,
+    distributor: selectedProducts[0]?.distributor || ''
+  }));
+}, []);
 
   // Delete product handler
   const handleProductDelete = async (productId) => {
@@ -1093,7 +1096,16 @@ const handlePurchaseDelete = async(id) =>{
     XLSX.writeFile(workbook, `${fileName}.xlsx`);
   }, []);
   
- 
+ const handleBoxCalculation = (index, quantity, itemsPerBox) => {
+  setNewPurchase(prev => {
+    const updatedProducts = [...prev.products];
+    updatedProducts[index] = {
+      ...updatedProducts[index],
+      box: Math.ceil(quantity / itemsPerBox)
+    };
+    return {...prev, products: updatedProducts};
+  });
+};
  
 
 
@@ -2008,39 +2020,72 @@ const handlePurchaseDelete = async(id) =>{
               <h4 className="font-medium mb-2">Selected Products</h4>
               <table className="w-full border">
                 <thead>
-                  <tr className="bg-gray-100">
-                    <th className="p-2 border">Product</th>
-                    <th className="p-2 border">Price</th>
-                    <th className="p-2 border">Qty</th>
-                    <th className="p-2 border">Box</th>
-                    <th className="p-2 border">CGST</th>
-                    <th className="p-2 border">SGST</th>
-                    <th className="p-2 border">HSN</th>
-                  </tr>
-                </thead>
+  <tr className="bg-gray-100">
+    <th className="p-2 border">Product</th>
+    <th className="p-2 border">Price</th>
+    <th className="p-2 border">Qty</th>
+    <th className="p-2 border">Items/Box</th>
+    <th className="p-2 border">Boxes</th>
+    <th className="p-2 border">CGST</th>
+    <th className="p-2 border">SGST</th>
+    <th className="p-2 border">HSN</th>
+  </tr>
+</thead>
                 <tbody>
-                  {newPurchase.products.map((product, index) => (
-                    <tr key={index}>
-                      <td className="p-2 border">{product.name}</td>
-                      <td className="p-2 border">₹{product.price}</td>
-                      <td className="p-2 border">
-                        <input
-                          type="number"
-                          min="1"
-                          className="w-20 border p-1 rounded"
-                          value={product.quantity}
-                          onChange={(e) => 
-                            handleProductQuantityChange(index, parseInt(e.target.value) || 1)
-                          }
-                        />
-                      </td>
-                      <td className="p-2 border">{product.box}</td>
-                      <td className="p-2 border">{product.CGST}%</td>
-                      <td className="p-2 border">{product.SGST}%</td>
-                      <td className="p-2 border">{product.HSN}</td>
-                    </tr>
-                  ))}
-                </tbody>
+  {newPurchase.products.map((product, index) => (
+    <tr key={index}>
+      <td className="p-2 border">{product.name}</td>
+      <td className="p-2 border">₹{product.price}</td>
+      <td className="p-2 border">
+        <input
+          type="number"
+          min="1"
+          className="w-20 border p-1 rounded"
+          value={product.quantity}
+          onChange={(e) => {
+            const newQuantity = parseInt(e.target.value) || 1;
+            // Update quantity and recalculate boxes
+            handleProductQuantityChange(index, newQuantity);
+            handleBoxCalculation(index, newQuantity, product.itemsPerBox);
+          }}
+        />
+      </td>
+      <td className="p-2 border">
+        <input
+          type="number"
+          min="1"
+          className="w-20 border p-1 rounded"
+          value={product.itemsPerBox}
+          onChange={(e) => {
+            const newItemsPerBox = parseInt(e.target.value) || 1;
+            // Update items per box and recalculate boxes
+            setNewPurchase(prev => {
+              const updatedProducts = [...prev.products];
+              updatedProducts[index] = {
+                ...updatedProducts[index],
+                itemsPerBox: newItemsPerBox
+              };
+              return {...prev, products: updatedProducts};
+            });
+            handleBoxCalculation(index, product.quantity, newItemsPerBox);
+          }}
+        />
+      </td>
+      <td className="p-2 border">
+        <input
+          type="number"
+          min="1"
+          className="w-20 border p-1 rounded"
+          value={product.box}
+          readOnly // Make box field read-only since it's calculated
+        />
+      </td>
+      <td className="p-2 border">{product.CGST}%</td>
+      <td className="p-2 border">{product.SGST}%</td>
+      <td className="p-2 border">{product.HSN}</td>
+    </tr>
+  ))}
+</tbody>
               </table>
             </div>
 

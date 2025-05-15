@@ -64,7 +64,7 @@ let salesSchema = new mongoose.Schema({
  },
  mode:{
     type: String,
-    enum: ["cash", "check", "upi", "card"],
+    enum: ["cash", "cheque", "upi", "card", "online"],
     default: "cash"
 
  },
