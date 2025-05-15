@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {cartinfo} from '../../feature/cart'
 import url from '@/misc/url';
+import { Delete, X } from 'lucide-react';
 export default function Cart() {
   let user = useSelector((state) => state.name.value)
   let dispatch = useDispatch()
@@ -100,6 +101,15 @@ export default function Cart() {
     }
     fetch_data()
   },[])
+  
+  let handleDelete = async(id) =>{
+
+    let result = await axios.delete(`${url}cart/delete/${id}`);
+    if(result.data.success){
+      setCartItems((prev) => prev.filter(item => item._id !== id));
+    }
+
+  }
 
   return (
     <> 
@@ -120,6 +130,7 @@ export default function Cart() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {cartItems.length > 0 ? cartItems.map((item) => (
           <div key={item.id} className="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between hover:shadow-lg transition">
+           <div className='flex justify-end p-2' onClick={()=>handleDelete(item._id)}><X/></div>
             <div>
               <h3 className="text-xl font-bold text-green-700 mb-2">{item.name}</h3>
               <p className="text-gray-600 text-sm mb-1"><b>Product ID:</b> {item.product_id}</p>

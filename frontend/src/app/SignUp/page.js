@@ -85,6 +85,10 @@ export default function SignUp() {
               onChange={handleChange}
               className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
               placeholder="Enter your name"
+              minLength={2}
+              pattern="[A-Za-z\s]+"
+              title= "only letters and spaces allowed"
+              
             />
           </div>
 
@@ -106,13 +110,15 @@ export default function SignUp() {
           <div>
             <label className="block text-sm font-medium text-gray-700">Phone Number</label>
             <input
-              type="tel"
+              type="number"
               name="phone"
               required
               value={formData.phone}
               onChange={handleChange}
               className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
               placeholder="9876543210"
+              minLength={10}
+              maxLength={10}
             />
           </div>
 
@@ -127,6 +133,8 @@ export default function SignUp() {
               onChange={handleChange}
               className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
               placeholder="••••••••"
+              minLength={6}
+              maxLength={20}
             />
           </div>
 

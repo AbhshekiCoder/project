@@ -5,14 +5,17 @@ import LINK from "next/link";
 import CompanyLogo from '../assets/CompanyLogo.jpg'
 import { useDispatch, useSelector } from 'react-redux';
 import { userinfo } from '../feature/userinfo';
+import { useRouter } from 'next/navigation';
 
 
 export default function Navbar() {
+	let router = useRouter()
 	let dispatch = useDispatch()
 	let user = useSelector((state) => state.name.value)
      let logout = () =>{
 		localStorage.removeItem('token');
 		dispatch(userinfo(''))
+		router.push('./')
 
 	 }
   	return (

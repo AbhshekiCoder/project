@@ -47,7 +47,10 @@ console.log(process.env.URL)
     console.log(product)
     let token = localStorage.getItem("token");
     let quantity = document.getElementById(id).value;
-    
+    if(document.getElementById(id).value == 0 || ""){
+      alert("please enter quantity");
+      return
+    }
     let obj = {
       
       name: product.name,
@@ -66,7 +69,12 @@ console.log(process.env.URL)
     let result = await axios.post(`${url}cart/cart`, obj)
     if(result.data.success){
       alert(result.data.message)
-      dispatch(cartinfo(cart + 1))
+       let result1 = await axios.get(`${url}cart_fetch/${token}`);
+    console.log(result1.data)
+    if(result1.data.success){
+      dispatch(cartinfo(result1.data.data.length));
+      localStorage.setItem("cart", cartinfo(result1.data.data.length))
+    }
 
       localStorage.setItem("cart", cart + 1 )
       localStorage.setItem( product._id,   1);
@@ -92,6 +100,13 @@ console.log(process.env.URL)
   
         }
         
+         let result1 = await axios.get(`${url}cart_fetch/${token}`);
+    console.log(result1.data)
+    if(result1.data.success){
+      dispatch(cartinfo(result1.data.data.length));
+      localStorage.setItem("cart", cartinfo(result1.data.data.length))
+    }
+        
   
       }
       else{
@@ -103,7 +118,7 @@ console.log(process.env.URL)
   
     
       
-      dispatch(cartinfo(Number(localStorage.getItem("cart"))||0))
+      
       console.log("hello")
        
     try {
@@ -115,8 +130,9 @@ console.log(process.env.URL)
     } catch (error) {
       console.error('Error fetching products:', error);
     }
-  
-      
+    
+        
+   
      
     },[dispatch, router]);
 useEffect(()=>{
@@ -173,7 +189,7 @@ useEffect(()=>{
             <p className="text-xs text-gray-600">Distributorship: {product.distributor}</p>
               {/* Quantity Control */}
               <div className="flex items-center gap-2 mb-3">
-                <input type='number' className='w-full h-10 border text-center ' placeholder='quantity' min={0} id = {product._id}/>
+                <input type='number' className='w-full h-10 border text-center ' placeholder='quantity' min={1} max={product.quantity} id = {product._id} required/>
               </div>
             <button
               onClick={() => handleSell(product, product._id)}
@@ -182,7 +198,7 @@ useEffect(()=>{
               Add to Cart
             </button>
           </div>
-        )):<div>loading...</div>}
+        )):<div>{currentProducts.length<1?'this product not available':'loading...'}</div>}
       </div>
 
       {/* Pagination */}

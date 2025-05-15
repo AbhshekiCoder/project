@@ -22,6 +22,8 @@ import inventoryDelete from './Routers/accountant/inventory_delete.js';
 import delete_sales from './Routers/accountant/delete_sales.js';
 import inventoryModel from './Models/inventoryModel.js';
 import delete_purchase from './Routers/accountant/delete_purchase.js';
+import cartFetch from './Routers/fetch/cartFecth.js';
+import delete_cart from './Routers/user/delete_cart.js';
 
 
 
@@ -49,6 +51,8 @@ app.use('/inventory/update', inventoryUpdate)
 app.use('/inventory/delete', inventoryDelete);
 app.use('/sales/delete', delete_sales )
 app.use('/purchase/delete', delete_purchase)
+app.use('/cart/delete', delete_cart)
+
 MongoDBConnect()
 
 
