@@ -1,2 +1,2 @@
-let url = "https://project-aec1.onrender.com/"
+let url = "http://localhost:5000/"
 export default url;

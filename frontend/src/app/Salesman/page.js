@@ -189,7 +189,7 @@ useEffect(()=>{
             <p className="text-xs text-gray-600">Distributorship: {product.distributor}</p>
               {/* Quantity Control */}
               <div className="flex items-center gap-2 mb-3">
-                <input type='number' className='w-full h-10 border text-center ' placeholder='quantity' min={1} max={product.quantity} id = {product._id} required/>
+                <input type='number' className='w-full h-10 border text-center ' placeholder='quantity' min={product.quantity<1?0:1} max={product.quantity} id = {product._id} required onChange={()=>{document.getElementById(product._id).value < 0?document.getElementById(product._id).value = 0:''}}/>
               </div>
             <button
               onClick={() => handleSell(product, product._id)}

@@ -80,7 +80,7 @@ const [todaySales, setTodaySales] = useState([]);
 });
   // Constants
   const distributors = ['All', 'Balaji', 'Namkeen', 'Colgate', 'Coahclate'];
-  const paymentStatuses = ['pending', 'paid', 'half-paid', 'cancelled'];
+  const paymentStatuses = ['pending', 'paid', 'half'];
   const paymentModes = ['cash', 'cheque', 'online', 'card', 'upi'];
 
   // Data filtering function
@@ -218,7 +218,26 @@ const [todaySales, setTodaySales] = useState([]);
 
   // Product form handlers
   const handleProductSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
+    const inputs = document.querySelectorAll('input[type="number"]');
+    console.log(inputs)
+    let hasNegative = false;
+
+    inputs.forEach(input => {
+      if (parseFloat(input.value) < 0) {
+        hasNegative = true;
+        input.style.borderColor = 'red'; // Optional: highlight the error
+      } else {
+        input.style.borderColor = ''; // Reset if valid
+      }
+    });
+
+    if (hasNegative) {
+      e.preventDefault();
+      alert("Please remove negative values from the form.");
+      return;
+    }
+  
     try {
       setLoading(true);
       
@@ -278,8 +297,27 @@ const clearDateRange = () => {
   filterTransactionsByDate('', '');
 };
   // Purchase form handlers
-  const handlePurchaseSubmit = async () => {
+  const handlePurchaseSubmit = async (e) => {
     try {
+      const inputs = document.querySelectorAll('input[type="number"]');
+    console.log(inputs)
+    let hasNegative = false;
+
+    inputs.forEach(input => {
+      if (parseFloat(input.value) < 0) {
+        hasNegative = true;
+        input.style.borderColor = 'red'; // Optional: highlight the error
+      } else {
+        input.style.borderColor = ''; // Reset if valid
+      }
+    });
+
+    if (hasNegative) {
+      e.preventDefault();
+      alert("Please remove negative values from the form.");
+      return;
+    }
+  
       if (!newPurchase.products?.length) {
         setError('Please select at least one product');
         return;
@@ -354,8 +392,27 @@ const clearDateRange = () => {
 };
 
   // Payment update handlers
-  const handlePaymentUpdate = async () => {
+  const handlePaymentUpdate = async (e) => {
     try {
+    const inputs = document.querySelectorAll('input[type="number"]');
+    console.log(inputs)
+    let hasNegative = false;
+
+    inputs.forEach(input => {
+      if (parseFloat(input.value) < 0) {
+        hasNegative = true;
+        input.style.borderColor = 'red'; // Optional: highlight the error
+      } else {
+        input.style.borderColor = ''; // Reset if valid
+      }
+    });
+
+    if (hasNegative) {
+      e.preventDefault();
+      alert("Please remove negative values from the form.");
+      return;
+    }
+  
       setLoading(true);
       const sale = sales.find(s => s._id === paymentUpdate.id);
       if (!sale) return;
@@ -406,8 +463,27 @@ const clearDateRange = () => {
   };
 
   // Bulk update handler
-  const handleBulkPaymentUpdate = async () => {
+  const handleBulkPaymentUpdate = async (e) => {
     try {
+    const inputs = document.querySelectorAll('input[type="number"]');
+    console.log(inputs)
+    let hasNegative = false;
+
+    inputs.forEach(input => {
+      if (parseFloat(input.value) < 0) {
+        hasNegative = true;
+        input.style.borderColor = 'red'; // Optional: highlight the error
+      } else {
+        input.style.borderColor = ''; // Reset if valid
+      }
+    });
+
+    if (hasNegative) {
+      e.preventDefault();
+      alert("Please remove negative values from the form.");
+      return;
+    }
+  
       setLoading(true);
       const updates = bulkUpdate.sales.map(sale => ({
         id: sale._id,
@@ -437,7 +513,9 @@ const clearDateRange = () => {
       const salesResponse = await axios.get(`${url}sales_fetch/sales_fetch`);
         if (salesResponse.data.success) {
           setSales(salesResponse.data.data);
+         
            filterTodaysTransactions()
+
         }
     
         resetBulkUpdate();
@@ -1862,6 +1940,8 @@ const handlePurchaseDelete = async(id) =>{
                       value={newProduct.quantity} 
                       onChange={(e) => setNewProduct({...newProduct, quantity: e.target.value})}
                       required
+                      min={1}
+                      
                     />
                   </div>
                 </div>
@@ -1874,6 +1954,8 @@ const handlePurchaseDelete = async(id) =>{
                       className="w-full border p-2 rounded" 
                       value={newProduct.box} 
                       onChange={(e) => setNewProduct({...newProduct, box: e.target.value})}
+                      required
+                      min={1}
                     />
                   </div>
                   <div>
@@ -1900,6 +1982,8 @@ const handlePurchaseDelete = async(id) =>{
                       className="w-full border p-2 rounded" 
                       value={newProduct.CGST} 
                       onChange={(e) => setNewProduct({...newProduct, CGST: e.target.value})}
+                      required
+                      min={1}
                     />
                   </div>
                   <div>
@@ -1909,6 +1993,8 @@ const handlePurchaseDelete = async(id) =>{
                       className="w-full border p-2 rounded" 
                       value={newProduct.SGST} 
                       onChange={(e) => setNewProduct({...newProduct, SGST: e.target.value})}
+                      required
+                      min={1}
                     />
                   </div>
                 </div>
@@ -1920,6 +2006,8 @@ const handlePurchaseDelete = async(id) =>{
                     className="w-full border p-2 rounded" 
                     value={newProduct.HSN} 
                     onChange={(e) => setNewProduct({...newProduct, HSN: e.target.value})}
+                    required
+                    min={1}
                   />
                 </div>
                 
@@ -2125,7 +2213,7 @@ const handlePurchaseDelete = async(id) =>{
               >
                 <option value="paid">Paid</option>
                 <option value="unpaid">unpaid</option>
-                <option value="half-paid">Half Paid</option>
+                <option value="half">Half Paid</option>
               </select>
             </div>
 
@@ -2332,10 +2420,11 @@ const handlePurchaseDelete = async(id) =>{
                  'Transaction ID'}
               </label>
               <input
-                type="text"
+                type="Number"
                 className="w-full border p-2 rounded"
                 value={bulkUpdate.ref}
                 onChange={(e) => setBulkUpdate({...bulkUpdate, ref: e.target.value})}
+                min={1}
               />
             </div>
             

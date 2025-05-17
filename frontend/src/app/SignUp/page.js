@@ -103,6 +103,7 @@ export default function SignUp() {
               onChange={handleChange}
               className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#66BB6A]"
               placeholder="you@example.com"
+              oninput="this.value = this.value.toLowerCase();"
             />
           </div>
 
