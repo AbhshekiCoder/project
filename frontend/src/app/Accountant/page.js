@@ -5,12 +5,47 @@ import axios from 'axios';
 import * as XLSX from 'xlsx';
 
 import url from '@/misc/url';
+import { io } from 'socket.io-client';
 const Accountant = () => {
   // Base URL for API calls
-   
+    const socket =  io("http://localhost:5000");
   // State for UI controls
+
+ let sale_data = async ()=>{
+     const salesResponse = await axios.get(`${url}sales_fetch/sales_fetch`);
+        if (salesResponse.data.success) {
+          setSales(salesResponse.data.data);
+          console.log(salesResponse.data.data);
+        }
+          // After fet ching data
+      
+  }
+  
+ useEffect(()=>{
+  
+
+  socket.on('connect_error', (err) => {
+    console.error('Connection error:', err.message);
+  });
+  
+ socket.on('receive_message', (data)=>{
+  alert(data.message)
+ 
+  sale_data();
+ })
+
+  
+ 
+
+  return () => {
+    socket.off('connect');
+    socket.off('connect_error');
+
+  }
+  },[])
+
   const [activeTab, setActiveTab] = useState('products');
-  const [selectedDistributor, setSelectedDistributor] = useState('All');
+  const [selectedDistributor, setSelectedDistributor] = useState('Balaji');
   const [globalFilter, setGlobalFilter] = useState('');
   const [dateRange, setDateRange] = useState({
     startDate: '',
@@ -121,12 +156,8 @@ const [todaySales, setTodaySales] = useState([]);
     
     return filtered;
   }, [selectedDistributor, globalFilter, dateRange]);
- const filterTodaysTransactions = useCallback(() => {
+const filterTodaysTransactions = useCallback(() => {
   const today = new Date().toISOString().split('T')[0];
-  setDateRange({
-    startDate: today,
-    endDate: today
-  });
   filterTransactionsByDate(today, today);
 }, [purchases, sales]);
   // Group sales by shop
@@ -156,6 +187,8 @@ const [todaySales, setTodaySales] = useState([]);
   
   return grouped;
 }, []);
+
+
   // Memoized filtered data
   const filteredProducts = useMemo(() => {
     return filterData(products);
@@ -196,13 +229,13 @@ const [todaySales, setTodaySales] = useState([]);
         }
         
         // Fetch sales (sales with type=sale)
-        const salesResponse = await axios.get(`${url}sales_fetch/sales_fetch`);
+       const salesResponse = await axios.get(`${url}sales_fetch/sales_fetch`);
         if (salesResponse.data.success) {
           setSales(salesResponse.data.data);
           console.log(salesResponse.data.data);
         }
-          // After fetching data
-      filterTodaysTransactions();
+          // After fet ching data
+    
       
         
       } catch (err) {
@@ -434,7 +467,7 @@ const clearDateRange = () => {
           s._id === paymentUpdate.id ? response.data.data : s
         ));
         resetPaymentUpdate();
-         filterTodaysTransactions()
+      
       }
     } catch (err) {
       setError('Failed to update payment');
@@ -514,7 +547,7 @@ const clearDateRange = () => {
         if (salesResponse.data.success) {
           setSales(salesResponse.data.data);
          
-           filterTodaysTransactions()
+           
 
         }
     
@@ -1861,6 +1894,8 @@ const handlePurchaseDelete = async(id) =>{
             className="w-full p-2 rounded text-black"
             value={selectedDistributor}
             onChange={(e) => setSelectedDistributor(e.target.value)}
+            
+
           >
             {distributors.map((dist) => (
               <option key={dist} value={dist}>{dist}</option>

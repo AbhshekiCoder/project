@@ -1,6 +1,6 @@
 
 "use client"
-import React, { useReducer, useState } from 'react';
+import React, { useReducer, useState, useEffect } from 'react';
 import LINK from 'next/link';
 import { Message } from 'rsuite';
 import axios from 'axios';
@@ -60,6 +60,31 @@ export default function Home() {
     
     
   };
+   useEffect(() => {
+ const socket = new WebSocket('http://localhost:5000');
+// Connect to backend directly
+
+    socket.onopen = () => {
+      console.log('WebSocket connected');
+      socket.send('Hello from frontend');
+    };
+
+    socket.onmessage = (event) => {
+      console.log('Message from server:', event.data);
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    socket.onclose = () => {
+      console.log('WebSocket closed');
+    };
+
+    return () => {
+      socket.close();
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#E8F5E9] flex items-center justify-center px-4">

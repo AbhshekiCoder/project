@@ -20,7 +20,8 @@ export default function SalesmanPage() {
 
   const productsPerPage = 20;
 
-  // Fetch Products from API
+
+ 
  
 console.log(process.env.URL)
   

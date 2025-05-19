@@ -24,6 +24,9 @@ import inventoryModel from './Models/inventoryModel.js';
 import delete_purchase from './Routers/accountant/delete_purchase.js';
 import cartFetch from './Routers/fetch/cartFecth.js';
 import delete_cart from './Routers/user/delete_cart.js';
+import {Server} from  'socket.io'
+import http from 'http'
+import { WebSocket, WebSocketServer } from 'ws';
 
 
 
@@ -32,6 +35,7 @@ app.use(express.json());
 dotenv.config();
 app.use(bodyParser.json())
 app.use(cors())
+
 
 app.use('/signup', UserRouter);
 app.use('/signin', loginRouter)
@@ -59,6 +63,33 @@ MongoDBConnect()
 
 
 
+const server = http.createServer(app);
+
+
+const io = new Server(server, {
+  path: '/socket.io',
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true
+  },
+  transports: ['websocket', 'polling'],
+  allowEIO3: true // For legacy compatibility
+});
+
+// Connection handler
+io.on('connection', (socket) => {
+  console.log(`⚡ Client connected: ${socket.id}`);
+  
+  socket.on('send_message', (data) => {
+    socket.broadcast.emit('receive_message', data);
+    console.log(data)
+  });
+  socket.on('disconnect', () => {
+    console.log(`💤 Client disconnected: ${socket.id}`);
+  });
+});
+
 
 
 
@@ -77,8 +108,6 @@ app.post('/inventory', async(req, res)=>{
 
 
 
-
-
-app.listen(process.env.PORT||5000, ()=>{
+server.listen(process.env.PORT,  ()=>{
     console.log(`server is running on port${process.env.PORT}`);
 })

@@ -2,17 +2,44 @@
 import Navbar from '@/components/Navbar';
 import { userinfo } from '@/feature/userinfo';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {cartinfo} from '../../feature/cart'
 import url from '@/misc/url';
 import { Delete, X } from 'lucide-react';
+import { io } from 'socket.io-client';
+import Link from 'next/link';
+
+
 export default function Cart() {
+   const socket =  io("http://localhost:5000");
   let user = useSelector((state) => state.name.value)
-  let dispatch = useDispatch()
+  const dispatch = useDispatch()
+// Add connection listeners
+
   
   const [cartItems, setCartItems] = useState([])
+  const [message, setMessage] = useState('');
   
+  useEffect(()=>{
+     socket.on('connect', () => {
+    console.log('Connected to server:', socket.id);
+  });
+
+  socket.on('connect_error', (err) => {
+    console.error('Connection error:', err.message);
+  });
+  socket.emit('send_message', 'hello')
+  socket.on('receive_message', (data)=>{
+    console.log(data)
+  })
+
+  return () => {
+    socket.off('connect');
+    socket.off('connect_error');
+  };
+
+  },[])
   let data = async() =>{
     let token = localStorage.getItem("token")
     let result = await axios.get(`${url}cart_fetch/${token}`);
@@ -74,13 +101,30 @@ export default function Cart() {
         // Refresh cart data
         data();
         localStorage.removeItem("cart")
-        dispatch(cartinfo(0))
+        dispatch(cartinfo(0));
+        const messageData = {
+          author: user.name,
+          message: `new product sold ${productsData.map((item) => item.product_name)}`,
+          time: new Date().toLocaleTimeString
+        }
+        setMessage(messageData)
+          
+        
+        socket.emit('send_message', messageData)
+
+      
+
       }
     } catch (error) {
       console.error("Error selling products:", error);
       alert("Error selling products");
     }
   };
+
+
+
+ 
+
 
   useEffect(()=>{
     data()
@@ -99,7 +143,17 @@ export default function Cart() {
         router.push("./SignIn")
       }
     }
-    fetch_data()
+    fetch_data();
+    
+  
+   
+  // Connect to backend directly
+  
+    
+    
+      
+
+  
   },[])
   
   let handleDelete = async(id) =>{
@@ -114,6 +168,7 @@ export default function Cart() {
   return (
     <> 
     <Navbar/>
+    <div className='text-green ml-3'><Link href = "./Salesman" >Home</Link></div>
     <div className="min-h-screen bg-[#E8F5E9] px-4 py-6 sm:px-8">
       {/* Add the single Sell All button at the top */}
       {cartItems.length > 0 && (
