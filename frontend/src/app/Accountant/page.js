@@ -8,7 +8,7 @@ import url from '@/misc/url';
 import { io } from 'socket.io-client';
 const Accountant = () => {
   // Base URL for API calls
-    const socket =  io("http://localhost:5000");
+    const socket =  io("https://project-aec1.onrender.com");
   // State for UI controls
 
  let sale_data = async ()=>{

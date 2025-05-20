@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 
 export default function Cart() {
-   const socket =  io("http://localhost:5000");
+   const socket =  io("https://project-aec1.onrender.com");
   let user = useSelector((state) => state.name.value)
   const dispatch = useDispatch()
 // Add connection listeners
@@ -103,6 +103,8 @@ export default function Cart() {
         localStorage.removeItem("cart")
         dispatch(cartinfo(0));
         const messageData = {
+
+          
           author: user.name,
           message: `new product sold ${productsData.map((item) => item.product_name)}`,
           time: new Date().toLocaleTimeString
