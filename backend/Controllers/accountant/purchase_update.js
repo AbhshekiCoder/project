@@ -37,10 +37,10 @@ const purchase_update = async (req, res) => {
 
             return salesModel.create(purchaseDoc);
         });
-
+        
         // Execute all insertions
         const insertedPurchases = await Promise.all(insertionPromises);
-        
+      
         // Get complete purchase records
         const result = await salesModel.find({
             _id: { $in: insertedPurchases.map(p => p._id) }

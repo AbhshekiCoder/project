@@ -62,7 +62,7 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-[#E8F5E9] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#F4FFC3] flex items-center justify-center px-4">
        <div className='w-fit h-fit modal message'>
 	<Message showIcon type = {type} className="w-fit m-auto">
          {message}
@@ -70,7 +70,7 @@ export default function SignIn() {
 
 	</div>
       <div className="bg-white shadow-xl rounded-xl w-full max-w-md p-8">
-        <h2 className="text-2xl font-bold text-[#2E7D32] mb-6 text-center">Sign In to Your Account</h2>
+        <h2 className="text-2xl font-bold text-[#5D8736] mb-6 text-center">Sign In to Your Account</h2>
         <form onSubmit={handleSubmit} className="space-y-5">
 
           {/* Email */}
@@ -104,7 +104,7 @@ export default function SignIn() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-[#2E7D32] text-white py-2 rounded-lg font-semibold hover:bg-[#1B5E20] transition"
+            className="w-full bg-[#5D8736] text-white py-2 rounded-lg font-semibold hover:bg-[#809D3C] transition"
           >
             Sign In
           </button>
@@ -113,7 +113,7 @@ export default function SignIn() {
         {/* Link to Signup */}
         <p className="mt-4 text-center text-sm text-gray-600">
           Don’t have an account?{' '}
-          <LINK href="./SignUp" className="text-[#2E7D32] font-semibold hover:underline">
+          <LINK href="./SignUp" className="bg-[#5D8736] font-semibold hover:underline">
             Sign up here
           </LINK>
         </p>

@@ -1,17 +1,16 @@
-"use client";
-
+"use client"
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
+import { FiDownload, FiPlus, FiEdit, FiTrash2, FiX, FiPrinter, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';
 
 import url from '@/misc/url';
 import { io } from 'socket.io-client';
-const Accountant = () => {
-  // Base URL for API calls
-    const socket =  io("https://project-aec1.onrender.com");
-  // State for UI controls
 
- let sale_data = async ()=>{
+const Accountant = () => {
+  const socket = io("https://project-aec1.onrender.com");
+  let sale_data = async ()=>{
      const salesResponse = await axios.get(`${url}sales_fetch/sales_fetch`);
         if (salesResponse.data.success) {
           setSales(salesResponse.data.data);
@@ -43,16 +42,12 @@ const Accountant = () => {
 
   }
   },[])
-
-  const [activeTab, setActiveTab] = useState('products');
+ const [activeTab, setActiveTab] = useState('products');
   const [selectedDistributor, setSelectedDistributor] = useState('Balaji');
   const [globalFilter, setGlobalFilter] = useState('');
-  const [dateRange, setDateRange] = useState({
-    startDate: '',
-    endDate: ''
-  });
+  const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
   const [todayPurchases, setTodayPurchases] = useState([]);
-const [todaySales, setTodaySales] = useState([]);
+  const [todaySales, setTodaySales] = useState([]);
 
   // Data states
   const [products, setProducts] = useState([]);
@@ -65,6 +60,7 @@ const [todaySales, setTodaySales] = useState([]);
   const [showProductForm, setShowProductForm] = useState(false);
   const [showPurchaseForm, setShowPurchaseForm] = useState(false);
 
+ 
   // Form data states
   const [newProduct, setNewProduct] = useState({ 
     name: '', 
@@ -105,18 +101,33 @@ const [todaySales, setTodaySales] = useState([]);
   });
 
   // Bulk update state
- const [bulkUpdate, setBulkUpdate] = useState({
-  customer: '', // Changed from shop to customer
-  sales: [],
-  mode: 'cash',
-  ref: '',
-  status: 'pending',
-  date: new Date().toISOString().split('T')[0],
-});
+  const [bulkUpdate, setBulkUpdate] = useState({
+    customer: '',
+    sales: [],
+    mode: 'cash',
+    ref: '',
+    status: 'pending',
+    date: new Date().toISOString().split('T')[0],
+  });
+
   // Constants
   const distributors = ['All', 'Balaji', 'Namkeen', 'Colgate', 'Coahclate'];
   const paymentStatuses = ['pending', 'paid', 'half'];
   const paymentModes = ['cash', 'cheque', 'online', 'card', 'upi'];
+
+  // Theme colors
+  const theme = {
+    primary: '#5D8736',
+    secondary: '#809D3C',
+    accent: '#A9C46C',
+    background: '#F4FFC3',
+    text: '#2C3E50',
+    lightText: '#7F8C8D',
+    border: '#BDC3C7',
+    error: '#E74C3C',
+    success: '#2ECC71',
+    warning: '#F39C12'
+  };
 
   // Data filtering function
   const filterData = useCallback((data) => {
@@ -1241,8 +1252,8 @@ const handlePurchaseDelete = async(id) =>{
        
           return (
             <>
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex space-x-4">
+              <div className="flex justify-between items-center mb-4 p-3">
+                <div className="flex space-x-4 ">
                   <input 
                     type="text" 
                     className="border p-2 rounded w-64" 
@@ -1312,8 +1323,8 @@ const handlePurchaseDelete = async(id) =>{
                   </button>
                 </div>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full border bg-white shadow rounded">
+              <div className="overflow-x-auto ">
+                <table className="w-full border bg-white shadow rounded ">
                   <thead>
                     <tr className="bg-green-100">
                       <th className="p-2 border">Name</th>
@@ -1384,7 +1395,7 @@ const handlePurchaseDelete = async(id) =>{
       case 'purchases':
         return (
           <>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-4 p-3">
               <div className="flex space-x-4">
                 <input 
                   type="text" 
@@ -1521,7 +1532,7 @@ const handlePurchaseDelete = async(id) =>{
      case 'sales':
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 p-3">
         <div className="flex space-x-4">
           <input 
             type="text" 
@@ -1732,7 +1743,7 @@ const handlePurchaseDelete = async(id) =>{
      case 'today':
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 p-3">
         <h2 className="text-xl font-semibold">Transactions</h2>
         <div className="flex items-center space-x-2">
           <div className="relative">
@@ -1882,9 +1893,9 @@ const handlePurchaseDelete = async(id) =>{
   };
 
   return (
-    <div className="flex min-h-screen font-sans bg-gray-50">
+ <div className="flex min-h-screen font-sans" style={{ backgroundColor: theme.background }}>
       {/* Sidebar */}
-      <div className="w-64 bg-green-700 text-white p-6 flex flex-col">
+      <div className="w-64 p-6 flex flex-col" style={{ backgroundColor: theme.primary, color: 'white' }}>
         <h2 className="text-2xl font-bold mb-6">Accountant Panel</h2>
         
         {/* Distributor Filter */}
@@ -1894,8 +1905,6 @@ const handlePurchaseDelete = async(id) =>{
             className="w-full p-2 rounded text-black"
             value={selectedDistributor}
             onChange={(e) => setSelectedDistributor(e.target.value)}
-            
-
           >
             {distributors.map((dist) => (
               <option key={dist} value={dist}>{dist}</option>
@@ -1905,81 +1914,128 @@ const handlePurchaseDelete = async(id) =>{
         
         <nav className="space-y-2 flex-1">
           <button 
-            className={`w-full text-left px-3 py-2 rounded transition ${activeTab === 'products' ? 'bg-green-800' : 'hover:bg-green-600'}`}
+            className={`w-full text-left px-3 py-2 rounded transition flex items-center ${activeTab === 'products' ? 'bg-white text-black' : 'hover:bg-green-600'}`}
             onClick={() => setActiveTab('products')}
           >
-            All Products
+            <span className="mr-2">📦</span> All Products
           </button>
           <button 
-            className={`w-full text-left px-3 py-2 rounded transition ${activeTab === 'purchases' ? 'bg-green-800' : 'hover:bg-green-600'}`}
+            className={`w-full text-left px-3 py-2 rounded transition flex items-center ${activeTab === 'purchases' ? 'bg-white text-black' : 'hover:bg-green-600'}`}
             onClick={() => setActiveTab('purchases')}
           >
-            Purchases
+            <span className="mr-2">🛒</span> Purchases
           </button>
           <button 
-            className={`w-full text-left px-3 py-2 rounded transition ${activeTab === 'sales' ? 'bg-green-800' : 'hover:bg-green-600'}`}
+            className={`w-full text-left px-3 py-2 rounded transition flex items-center ${activeTab === 'sales' ? 'bg-white text-black' : 'hover:bg-green-600'}`}
             onClick={() => setActiveTab('sales')}
           >
-            Sales
+            <span className="mr-2">💰</span> Sales
           </button>
-           <button 
-    className={`w-full text-left px-3 py-2 rounded transition ${activeTab === 'today' ? 'bg-green-800' : 'hover:bg-green-600'}`}
-    onClick={() => setActiveTab('today')}
-  >
-    Today's Transactions
-  </button>
+          <button 
+            className={`w-full text-left px-3 py-2 rounded transition flex items-center ${activeTab === 'today' ? 'bg-white text-black' : 'hover:bg-green-600'}`}
+            onClick={() => setActiveTab('today')}
+          >
+            <span className="mr-2">📅</span> Today's Transactions
+          </button>
         </nav>
       </div>
 
+
       {/* Main Content */}
       <div className="flex-1 p-6 overflow-auto">
-        {renderTabContent()}
+         {/* Header */}
+           <h1 className="text-2xl font-bold" style={{ color: theme.primary }}>
+            {activeTab === 'products' && 'Product Inventory'}
+            {activeTab === 'purchases' && 'Purchase Records'}
+            {activeTab === 'sales' && 'Sales Records'}
+            {activeTab === 'today' && "Today's Transactions"}
+          </h1>
+         {/* Status Messages */}
+        {loading && (
+          <div className="mb-4 p-3 rounded-lg flex items-center" style={{ backgroundColor: '#E8F5E9' }}>
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 mr-3" style={{ borderColor: theme.primary }}></div>
+            <span style={{ color: theme.primary }}>Loading data...</span>
+          </div>
+        )}
+        
+        {error && (
+          <div className="mb-4 p-3 rounded-lg flex items-center" style={{ backgroundColor: '#FDEDED' }}>
+            <span className="text-red-600">{error}</span>
+          </div>
+        )}
+        {/* Tab Content */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          {renderTabContent()}
+        </div>
       </div>
 
-      {/* Product Modal */}
+       {/* Product Modal */}
       {showProductForm && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded shadow-lg w-96">
-            <h3 className="text-xl mb-4 font-semibold">
-              {newProduct._id ? 'Edit Product' : 'Add Product'}
-            </h3>
+          <div className="bg-white p-6 rounded-lg shadow-xl w-96">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold" style={{ color: theme.primary }}>
+                {newProduct._id ? 'Edit Product' : 'Add Product'}
+              </h3>
+              <button 
+                onClick={() => {
+                  resetProductForm();
+                  setShowProductForm(false);
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
             
             <form onSubmit={handleProductSubmit}>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Product Name</label>
+                  <label className="block text-sm font-medium mb-1" style={{ color: theme.text }}>Product Name</label>
                   <input 
-                    className="w-full border p-2 rounded" 
+                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2" 
+                    style={{ 
+                      borderColor: theme.border,
+                      focusRing: theme.accent 
+                    }}
                     value={newProduct.name} 
                     onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
                     required
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Price</label>
+                    <label className="block text-sm font-medium mb-1" style={{ color: theme.text }}>Price</label>
                     <input 
                       type="number"
-                      className="w-full border p-2 rounded" 
+                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2" 
+                      style={{ 
+                        borderColor: theme.border,
+                        focusRing: theme.accent 
+                      }}
                       value={newProduct.price} 
                       onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Quantity</label>
+                    <label className="block text-sm font-medium mb-1" style={{ color: theme.text }}>Quantity</label>
                     <input 
                       type="number"
-                      className="w-full border p-2 rounded" 
+                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2" 
+                      style={{ 
+                        borderColor: theme.border,
+                        focusRing: theme.accent 
+                      }}
                       value={newProduct.quantity} 
                       onChange={(e) => setNewProduct({...newProduct, quantity: e.target.value})}
                       required
                       min={1}
-                      
                     />
                   </div>
                 </div>
+                
                 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -2057,29 +2113,44 @@ const handlePurchaseDelete = async(id) =>{
                   />
                 </div>
               </div>
+               <div className="flex justify-end space-x-3 mt-6">
+                  <button 
+                    type="button"
+                    className="px-4 py-2 rounded-lg border hover:bg-gray-50 transition" 
+                    onClick={() => {
+                      resetProductForm();
+                      setShowProductForm(false);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit"
+                    className="px-4 py-2 rounded-lg text-white transition flex items-center" 
+                    style={{ backgroundColor: theme.primary }}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Processing...
+                      </>
+                    ) : newProduct._id ? (
+                      <>
+                        <FiEdit className="mr-1" /> Update
+                      </>
+                    ) : (
+                      <>
+                        <FiPlus className="mr-1" /> Add
+                      </>
+                    )}
+                  </button>
+                </div>
               
-              <div className="flex justify-end space-x-2 mt-4">
-                <button 
-                  type="button"
-                  className="px-4 py-2 rounded border hover:bg-gray-100 transition" 
-                  onClick={() => {
-                    resetProductForm();
-                    setShowProductForm(false);
-                  }}
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit"
-                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition" 
-                  disabled={loading}
-                >
-                  {loading ? 'Saving...' : newProduct._id ? 'Update' : 'Add'}
-                </button>
-              </div>
             </form>
           </div>
         </div>
+      
       )}
 
       {/* Purchase Modal */}

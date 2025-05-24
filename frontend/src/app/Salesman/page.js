@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Navbar from '@/components/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,24 +7,19 @@ import { cartinfo } from '../../feature/cart';
 import { userinfo } from '@/feature/userinfo';
 import { useRouter } from 'next/navigation';
 import url from '@/misc/url';
+
 export default function SalesmanPage() {
-  let router = useRouter()
-  let dispatch = useDispatch()
-  let user =  useSelector((state) => state.name.value)
-  let cart = useSelector((state) => state.cart.value)
-  const [product, setProduct] = useState([])
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.name.value);
+  const cart = useSelector((state) => state.cart.value);
+  const [product, setProduct] = useState([]);
   const [productsData, setProductsData] = useState([]);
   const [search, setSearch] = useState('');
   const [priceFilter, setPriceFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [isLoading, setIsLoading] = useState(true);
   const productsPerPage = 20;
-
-
- 
- 
-console.log(process.env.URL)
-  
 
   // Filtering Functions
   const filterByPrice = (product) => {
@@ -41,19 +36,17 @@ console.log(process.env.URL)
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirst, indexOfLast);
-
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-  const handleSell = async(product, id) => {
-    console.log(product)
-    let token = localStorage.getItem("token");
-    let quantity = document.getElementById(id).value;
-    if(document.getElementById(id).value == 0 || ""){
-      alert("please enter quantity");
-      return
+  const handleSell = async (product, id) => {
+    const quantity = document.getElementById(id).value;
+    if (!quantity || quantity <= 0) {
+      alert("Please enter a valid quantity");
+      return;
     }
-    let obj = {
-      
+
+    const token = localStorage.getItem("token");
+    const obj = {
       name: product.name,
       price: product.price,
       quantity: quantity,
@@ -62,169 +55,208 @@ console.log(process.env.URL)
       CGST: product.CGST,
       SGST: product.SGST,
       HSN: product.HSN
+    };
 
-      
-      
-    }
-
-    let result = await axios.post(`${url}cart/cart`, obj)
-    if(result.data.success){
-      alert(result.data.message)
-       let result1 = await axios.get(`${url}cart_fetch/${token}`);
-    console.log(result1.data)
-    if(result1.data.success){
-      dispatch(cartinfo(result1.data.data.length));
-      localStorage.setItem("cart", cartinfo(result1.data.data.length))
-    }
-
-      localStorage.setItem("cart", cart + 1 )
-      localStorage.setItem( product._id,   1);
-    }
-
-   
-    
-  };
-  
-    
- 
-      let fetch_data = useCallback(async()=>{
-        
-      let token = localStorage.getItem("token");
-      console.log(token)
-      if(token){
-        let result = await axios.post(`${url}user/user`, {token: token});
-        console.log(result.data)
-        if(result.data.success){
-          dispatch(userinfo(result.data.data));
-          console.log(result.data.success)
-         
-  
-        }
-        
-         let result1 = await axios.get(`${url}cart_fetch/${token}`);
-    console.log(result1.data)
-    if(result1.data.success){
-      dispatch(cartinfo(result1.data.data.length));
-      localStorage.setItem("cart", cartinfo(result1.data.data.length))
-    }
-        
-  
-      }
-      else{
-        router.push("./SignIn")
-  
-      }
-     
-    
-  
-    
-      
-      
-      console.log("hello")
-       
     try {
-      const result = await axios.get(`${url}product/product`);
+      const result = await axios.post(`${url}cart/cart`, obj);
       if (result.data.success) {
-       
-        setProduct(result.data.data);
+        alert(result.data.message);
+        const result1 = await axios.get(`${url}cart_fetch/${token}`);
+        if (result1.data.success) {
+          dispatch(cartinfo(result1.data.data.length));
+          localStorage.setItem("cart", result1.data.data.length);
+        }
+        localStorage.setItem(product._id, 1);
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error('Error adding to cart:', error);
+      alert("Failed to add product to cart");
     }
+  };
+
+  const fetch_data = useCallback(async () => {
+    setIsLoading(true);
+    const token = localStorage.getItem("token");
     
-        
-   
-     
-    },[dispatch, router]);
-useEffect(()=>{
-  fetch_data();
-  
+    if (!token) {
+      router.push("./SignIn");
+      return;
+    }
 
-},[fetch_data])
-useEffect(()=>{
-  if (user?.distributorship && product.length > 0) {
-    const filtered = product.filter(product => product.distributor === user.distributorship);
-    setProductsData(filtered);
-  }
+    try {
+      // Fetch user data
+      const userResult = await axios.post(`${url}user/user`, { token });
+      if (userResult.data.success) {
+        dispatch(userinfo(userResult.data.data));
+      }
 
-}, [user, product])
+      // Fetch cart data
+      const cartResult = await axios.get(`${url}cart_fetch/${token}`);
+      if (cartResult.data.success) {
+        dispatch(cartinfo(cartResult.data.data.length));
+        localStorage.setItem("cart", cartResult.data.data.length);
+      }
+
+      // Fetch products
+      const productResult = await axios.get(`${url}product/product`);
+      if (productResult.data.success) {
+        setProduct(productResult.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dispatch, router]);
+
+  useEffect(() => {
+    fetch_data();
+  }, [fetch_data]);
+
+  useEffect(() => {
+    if (user?.distributorship && product.length > 0) {
+      const filtered = product.filter(product => product.distributor === user.distributorship);
+      setProductsData(filtered);
+    }
+  }, [user, product]);
 
   return (
     <>
-    <Navbar/>
-    <div className="min-h-screen bg-[#F1F8E9] px-6 py-10">
-     <div className = "flex justify-end p-3" onClick={() =>{router.push("./Cart")}}><div><i class="fa-solid fa-cart-shopping text-3xl text-green-900"></i><div>{cart}</div></div></div>
-      {/* Filters */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 max-w-4xl mx-auto mb-8">
-        <input
-          type="text"
-          
-          placeholder="Search by product name..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full md:w-1/2 px-4 py-2 border rounded-md border-green-300 focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
-
-        <select
-          value={priceFilter}
-          onChange={(e) => setPriceFilter(e.target.value)}
-          className="w-full md:w-1/3 px-4 py-2 border rounded-md border-green-300 focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-          <option value="all">All Prices</option>
-          <option value="below50">Below ₹50</option>
-          <option value="50to100">₹50 – ₹100</option>
-          <option value="above100">Above ₹100</option>
-        </select>
-      </div>
-
-      {/* Product Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
-        {currentProducts&&currentProducts.length>0?currentProducts.map((product) => (
-          <div
-            key={product._id}
-            className="bg-white border border-green-100 shadow-sm rounded-lg p-3 hover:shadow-md transition"
-          >
-            <h3 className="text-sm font-medium text-green-800 truncate">{product.name}</h3>
-            <p className="text-xs text-gray-600">Price: ₹{product.price}</p>
-            <p className="text-xs text-gray-600">Qty: {product.quantity}</p>
-            <p className="text-xs text-gray-600">Distributorship: {product.distributor}</p>
-              {/* Quantity Control */}
-              <div className="flex items-center gap-2 mb-3">
-                <input type='number' className='w-full h-10 border text-center ' placeholder='quantity' min={product.quantity<1?0:1} max={product.quantity} id = {product._id} required onChange={()=>{document.getElementById(product._id).value < 0?document.getElementById(product._id).value = 0:''}}/>
-              </div>
-            <button
-              onClick={() => handleSell(product, product._id)}
-              className="mt-2 w-full text-sm bg-green-600 text-white py-1.5 rounded hover:bg-green-700 transition"
+      <Navbar />
+      <div className="min-h-screen bg-[#F4FFC3] px-4 py-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header and Cart */}
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-2xl font-bold text-[#5D8736]">Product Catalog</h1>
+            <div 
+              className="flex items-center gap-2 cursor-pointer hover:bg-[#A9C46C] p-2 rounded-lg transition"
+              onClick={() => router.push("./Cart")}
             >
-              Add to Cart
-            </button>
+              <i className="fa-solid fa-cart-shopping text-xl text-[#5D8736]"></i>
+              <span className="bg-[#5D8736] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
+                {cart}
+              </span>
+            </div>
           </div>
-        )):<div>{currentProducts.length<1?'this product not available':'loading...'}</div>}
+
+          {/* Filters */}
+          <div className="bg-white rounded-lg shadow-md p-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Search Products</label>
+                <input
+                  type="text"
+                  placeholder="Enter product name..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full px-4 py-2 border border-[#A9C46C] rounded-md focus:outline-none focus:ring-2 focus:ring-[#5D8736]"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Price</label>
+                <select
+                  value={priceFilter}
+                  onChange={(e) => setPriceFilter(e.target.value)}
+                  className="w-full px-4 py-2 border border-[#A9C46C] rounded-md focus:outline-none focus:ring-2 focus:ring-[#5D8736]"
+                >
+                  <option value="all">All Prices</option>
+                  <option value="below50">Below ₹50</option>
+                  <option value="50to100">₹50 – ₹100</option>
+                  <option value="above100">Above ₹100</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Product Grid */}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5D8736]"></div>
+            </div>
+          ) : (
+            <>
+              {currentProducts.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {currentProducts.map((product) => (
+                    <div
+                      key={product._id}
+                      className="bg-white border border-[#A9C46C] rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
+                    >
+                      <div className="p-4">
+                        <h3 className="text-lg font-semibold text-[#5D8736] mb-1 truncate">{product.name}</h3>
+                        <div className="space-y-1 mb-3">
+                          <p className="text-sm text-gray-600">
+                            <span className="font-medium">Price:</span> ₹{product.price}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            <span className="font-medium">Stock:</span> {product.quantity}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            <span className="font-medium">Distributor:</span> {product.distributor}
+                          </p>
+                        </div>
+
+                        <div className="mb-3">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                          <input
+                            type="number"
+                            className="w-full px-3 py-2 border border-[#A9C46C] rounded-md focus:outline-none focus:ring-1 focus:ring-[#5D8736]"
+                            placeholder="Enter quantity"
+                            min={product.quantity < 1 ? 0 : 1}
+                            max={product.quantity}
+                            id={product._id}
+                            required
+                            onChange={(e) => {
+                              if (e.target.value < 0) e.target.value = 0;
+                              if (e.target.value > product.quantity) e.target.value = product.quantity;
+                            }}
+                          />
+                        </div>
+
+                        <button
+                          onClick={() => handleSell(product, product._id)}
+                          className="w-full bg-[#5D8736] text-white py-2 rounded-md hover:bg-[#809D3C] transition font-medium"
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white rounded-lg shadow-md p-8 text-center">
+                  <p className="text-gray-600">No products available matching your criteria</p>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Pagination */}
+          {filteredProducts.length > productsPerPage && (
+            <div className="mt-8 flex justify-center items-center space-x-4">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+                className={`px-4 py-2 rounded-md ${currentPage === 1 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-[#A9C46C] text-[#5D8736] hover:bg-[#809D3C] hover:text-white'}`}
+              >
+                Previous
+              </button>
+
+              <span className="text-[#5D8736] font-medium">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                className={`px-4 py-2 rounded-md ${currentPage === totalPages ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-[#A9C46C] text-[#5D8736] hover:bg-[#809D3C] hover:text-white'}`}
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Pagination */}
-      <div className="mt-10 flex justify-center items-center space-x-2">
-        <button
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-          className="px-4 py-2 text-sm bg-green-200 text-green-800 rounded hover:bg-green-300 disabled:opacity-50"
-        >
-          Prev
-        </button>
-
-        <span className="text-green-800 font-semibold text-sm">
-          Page {currentPage} of {totalPages}
-        </span>
-
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          className="px-4 py-2 text-sm bg-green-200 text-green-800 rounded hover:bg-green-300 disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
-    </div>
     </>
   );
 }
