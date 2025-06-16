@@ -11,7 +11,7 @@ import { io } from 'socket.io-client';
 import Link from 'next/link';
 
 export default function Cart() {
-  const socket = io("https://project-aec1.onrender.com");
+  const socket = io("http://localhost:5000");
   const user = useSelector((state) => state.name.value);
   const dispatch = useDispatch();
   const [cartItems, setCartItems] = useState([]);
@@ -92,7 +92,8 @@ export default function Cart() {
         socket.emit('send_message', {
           author: user.name,
           message: `New products sold: ${productsData.map(item => item.product_name).join(', ')}`,
-          time: new Date().toLocaleTimeString()
+          time: new Date().toLocaleTimeString(),
+          type: "products"
         });
         fetchCartData();
       }

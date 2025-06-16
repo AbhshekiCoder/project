@@ -74,7 +74,7 @@ export default function SignUp() {
                 className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#A9C46C]"
                 placeholder="Enter your name"
                 minLength={2}
-                pattern="[A-Za-z\s]+"
+               
                 title="only letters and spaces allowed"
               />
             </div>

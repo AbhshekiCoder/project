@@ -47,6 +47,7 @@ export default function SignIn() {
       document.querySelector(".message").style.display = "block"
       localStorage.setItem("token", result.data.token)
       
+      
       if(result.data.role == "salesMan"){
         router.push("./Salesman")
       }

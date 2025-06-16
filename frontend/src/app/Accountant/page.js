@@ -3,13 +3,20 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { FiDownload, FiPlus, FiEdit, FiTrash2, FiX, FiPrinter, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';
+import { FaSearch, FaFilter} from 'react-icons/fa';
+import { FaCommentDots, FaTimes, FaPaperPlane } from 'react-icons/fa';
+
 
 import url from '@/misc/url';
 import { io } from 'socket.io-client';
 
 const Accountant = () => {
-  const socket = io("https://project-aec1.onrender.com");
+  const [showChat, setShowChat] = useState(false);
+const [messages, setMessages] = useState([]);
+const [newMessage, setNewMessage] = useState('');
+
+
+  const socket = io("http://localhost:5000");
   let sale_data = async ()=>{
      const salesResponse = await axios.get(`${url}sales_fetch/sales_fetch`);
         if (salesResponse.data.success) {
@@ -20,18 +27,42 @@ const Accountant = () => {
       
   }
   
+
+  const sendMessage = () => {
+  if (newMessage.trim()) {
+    const messageData = {
+      sender: 'Accountant',
+      message: newMessage,
+      timestamp: new Date().toLocaleTimeString(),
+    };
+    console.log(messageData)
+    socket.emit('send_message', messageData);
+  
+    
+   
+
+  }
+};
  useEffect(()=>{
   
 
   socket.on('connect_error', (err) => {
     console.error('Connection error:', err.message);
   });
-  
+
  socket.on('receive_message', (data)=>{
-  alert(data.message)
+ if(data.type === "products"){
+  alert(`${data.message}`);
+  return;
+ }
+ console.log(data.message)
+    setMessages(prev => [...prev, data]);
+    setNewMessage("")
+
  
   sale_data();
  })
+  
 
   
  
@@ -39,6 +70,7 @@ const Accountant = () => {
   return () => {
     socket.off('connect');
     socket.off('connect_error');
+    socket.off('receive_message')
 
   }
   },[])
@@ -1893,6 +1925,7 @@ const handlePurchaseDelete = async(id) =>{
   };
 
   return (
+    <>  
  <div className="flex min-h-screen font-sans" style={{ backgroundColor: theme.background }}>
       {/* Sidebar */}
       <div className="w-64 p-6 flex flex-col" style={{ backgroundColor: theme.primary, color: 'white' }}>
@@ -2602,6 +2635,73 @@ const handlePurchaseDelete = async(id) =>{
         </div>
       )}
     </div>
+    <button 
+    onClick={() => setShowChat(!showChat)}
+    className="fixed bottom-6 right-6 bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-green-700 transition-all z-50"
+  >
+    {showChat ? <FaTimes size={20} /> : <FaCommentDots size={20} />}
+  </button>
+
+  {/* Chat Interface */}
+  {showChat && (
+    <div className="fixed bottom-20 right-6 w-80 h-96 bg-white rounded-lg shadow-xl flex flex-col z-50 border border-gray-200 overflow-hidden">
+      {/* Chat Header */}
+      <div className="bg-green-600 text-white p-3 flex justify-between items-center">
+        <h3 className="font-medium">Support Chat</h3>
+        <button 
+          onClick={() => setShowChat(false)}
+          className="text-white hover:text-gray-200"
+        >
+          <FaTimes size={16} />
+        </button>
+      </div>
+      
+      {/* Messages Area */}
+      <div className="flex-1 p-3 overflow-y-auto bg-gray-50">
+        {messages.length === 0 ? (
+          <div className="text-center text-gray-500 mt-10">
+            Start a conversation with support
+          </div>
+        ) : (
+          messages.map((msg, index) => (
+            <div 
+              key={index} 
+              className={`mb-3 ${msg.sender === 'Accountant' ? 'text-right' : 'text-left'}`}
+            >
+              <div className={`inline-block p-2 rounded-lg ${msg.sender === 'Accountant' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-800'}`}>
+                {msg.sender !== 'Accountant' && (
+                  <div className="text-xs font-semibold">{msg.sender}</div>
+                )}
+                <div>{msg.message}</div>
+                <div className="text-xs opacity-70 mt-1">{msg.timestamp}</div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      
+      {/* Message Input */}
+      <div className="p-3 border-t border-gray-200 bg-white">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+            placeholder="Type your message..."
+            className="flex-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-green-500"
+          />
+          <button
+            onClick={sendMessage}
+            className="bg-green-600 text-white px-3 rounded hover:bg-green-700 flex items-center justify-center"
+          >
+            <FaPaperPlane size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+    </>
   );
 };
 

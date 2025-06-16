@@ -7,6 +7,7 @@ import { cartinfo } from '../../feature/cart';
 import { userinfo } from '@/feature/userinfo';
 import { useRouter } from 'next/navigation';
 import url from '@/misc/url';
+import { io } from 'socket.io-client';
 
 export default function SalesmanPage() {
   const router = useRouter();
@@ -21,6 +22,61 @@ export default function SalesmanPage() {
   const [isLoading, setIsLoading] = useState(true);
   const productsPerPage = 20;
 
+  // Chat state
+  const [showChat, setShowChat] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+
+    const socket = io('http://localhost:5000')
+useEffect(() => {
+    // Initialize socket connection
+    
+   socket.on('connect_error', (err) => {
+    console.error('Connection error:', err.message);
+  });
+
+ socket.on('receive_message', (data)=>{
+ // alert(data.message);
+ console.log(data)
+    
+    setMessages(prev => [...prev, data]);
+    
+    setNewMessage('');
+   
+
+ 
+  
+ })
+    
+
+  
+ 
+
+  return () => {
+    socket.off('connect');
+    socket.off('connect_error');
+    socket.off('receive_message')
+
+  }
+  },[]);
+
+  const sendMessage = () => {
+    if (newMessage.trim() && socket) {
+      const messageData = {
+        sender: user?.name || 'Anonymous',
+        message: newMessage,
+        timestamp: new Date().toLocaleTimeString(),
+        type: "salesman_message"
+      }
+      
+      socket.emit('send_message', messageData);
+      
+      //setMessages(prev => [...prev, messageData]);
+      console.log(messages)
+     // setNewMessage('');
+      
+    }
+  };
   // Filtering Functions
   const filterByPrice = (product) => {
     if (priceFilter === 'below50') return product.price < 50;
@@ -65,6 +121,7 @@ export default function SalesmanPage() {
         if (result1.data.success) {
           dispatch(cartinfo(result1.data.data.length));
           localStorage.setItem("cart", result1.data.data.length);
+         
         }
         localStorage.setItem(product._id, 1);
       }
@@ -257,6 +314,73 @@ export default function SalesmanPage() {
           )}
         </div>
       </div>
+      {/* Chat Button */}
+      <button 
+        onClick={() => setShowChat(!showChat)}
+        className="fixed bottom-6 right-6 bg-[#5D8736] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-[#809D3C] transition-all z-50"
+      >
+        <i className={`fa-solid ${showChat ? 'fa-times' : 'fa-comment-dots'} text-xl`}></i>
+      </button>
+
+      {/* Chat Interface */}
+      {showChat && (
+        <div className="fixed bottom-20 right-6 w-80 h-96 bg-white rounded-lg shadow-xl flex flex-col z-50 border border-[#A9C46C] overflow-hidden">
+          {/* Chat Header */}
+          <div className="bg-[#5D8736] text-white p-3 flex justify-between items-center">
+            <h3 className="font-medium">Support Chat</h3>
+            <button 
+              onClick={() => setShowChat(false)}
+              className="text-white hover:text-gray-200"
+            >
+              <i className="fa-solid fa-times"></i>
+            </button>
+          </div>
+          
+          {/* Messages Area */}
+          <div className="flex-1 p-3 overflow-y-auto bg-gray-50">
+            {messages.length === 0 ? (
+              <div className="text-center text-gray-500 mt-10">
+                Start a conversation with support
+              </div>
+            ) : (
+              messages.map((msg, index) => (
+                <div 
+                  key={index} 
+                  className={`mb-3 ${msg.sender === user?.name ? 'text-right' : 'text-left'}`}
+                >
+                  <div className={`inline-block p-2 rounded-lg ${msg.sender === user?.name ? 'bg-[#5D8736] text-white' : 'bg-gray-200 text-gray-800'}`}>
+                    {msg.sender !== user?.name && (
+                      <div className="text-xs font-semibold">{msg.sender}</div>
+                    )}
+                    <div>{msg.message}</div>
+                    <div className="text-xs opacity-70 mt-1">{msg.timestamp}</div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+          
+          {/* Message Input */}
+          <div className="p-3 border-t border-gray-200 bg-white">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                placeholder="Type your message..."
+                className="flex-1 p-2 border border-[#A9C46C] rounded focus:outline-none focus:ring-1 focus:ring-[#5D8736]"
+              />
+              <button
+                onClick={sendMessage}
+                className="bg-[#5D8736] text-white px-3 rounded hover:bg-[#809D3C]"
+              >
+                <i className="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
