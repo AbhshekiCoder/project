@@ -16,7 +16,7 @@ const [messages, setMessages] = useState([]);
 const [newMessage, setNewMessage] = useState('');
 
 
-  const socket = io("http://localhost:5000");
+  const socket = io(url);
   let sale_data = async ()=>{
      const salesResponse = await axios.get(`${url}sales_fetch/sales_fetch`);
         if (salesResponse.data.success) {

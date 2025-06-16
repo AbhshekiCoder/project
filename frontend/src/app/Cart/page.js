@@ -11,7 +11,7 @@ import { io } from 'socket.io-client';
 import Link from 'next/link';
 
 export default function Cart() {
-  const socket = io("http://localhost:5000");
+  const socket = io(url);
   const user = useSelector((state) => state.name.value);
   const dispatch = useDispatch();
   const [cartItems, setCartItems] = useState([]);
