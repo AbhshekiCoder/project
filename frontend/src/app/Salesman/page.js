@@ -27,7 +27,7 @@ export default function SalesmanPage() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
-    const socket = io('http://localhost:5000')
+    const socket = io(url)
 useEffect(() => {
     // Initialize socket connection
     
