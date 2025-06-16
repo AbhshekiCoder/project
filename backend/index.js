@@ -69,7 +69,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   path: '/socket.io',
   cors: {
-    origin: 'http://localhost:3000',
+    origin: 'https://project-hvqo.vercel.app',
     methods: ['GET', 'POST'],
     credentials: true
   },
