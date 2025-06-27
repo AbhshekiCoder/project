@@ -23,7 +23,7 @@ export default function Navbar() {
       {/* Logo */}
       <Link href="/" className="flex items-center space-x-2">
         <div className="text-white text-2xl font-bold tracking-wide">
-          <span className="text-[#F4FFC3]">VyaparMitra</span>Zone
+          <span className="text-[#F4FFC3]">VyaparMitra</span>
         </div>
       </Link>
 
